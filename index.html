@@ -52,7 +52,7 @@
         .btn-tactical { transition: all 0.2s ease; }
         .btn-tactical:active { transform: scale(0.98); }
 
-        .option-btn.wrong { border-color: #ef4444 !important; background-color: rgba(127, 29, 29, 0.2) !important; color: #f87171 !important; opacity: 0.5; }
+        .option-btn.wrong { border-color: #ef4444 !important; background-color: rgba(127, 29, 29, 0.2) !important; color: #f87171 !important; }
         .option-btn.correct { border-color: #10b981 !important; background-color: rgba(6, 78, 59, 0.3) !important; color: #34d399 !important; font-weight: 800; border-width: 2px; }
 
         .penalty-flash { animation: flash-red 0.5s; }
@@ -62,14 +62,16 @@
         }
 
         .justification-box {
-            background-color: rgba(16, 185, 129, 0.05);
-            border-left: 4px solid #10b981;
+            background-color: rgba(9, 9, 11, 0.8);
+            border: 1px solid #27272a;
             padding: 1rem;
-            margin-top: 1rem;
-            font-size: 0.75rem;
-            color: #34d399;
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
             line-height: 1.4;
         }
+        
+        .just-correct { color: #34d399; border-left: 4px solid #10b981; }
+        .just-wrong { color: #f87171; border-left: 4px solid #ef4444; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative overflow-x-hidden">
@@ -91,12 +93,12 @@
                 <div class="w-10 h-10 bg-emerald-600 text-white flex items-center justify-center font-black rounded shadow-md">HM</div>
                 <div>
                     <h1 class="text-xs font-black text-emerald-500 uppercase tracking-tighter leading-none">Operação Sentinela</h1>
-                    <p class="text-[7px] text-zinc-500 font-bold uppercase mt-1">SISTEMA v3.7 | BASES CIENTÍFICAS</p>
+                    <p class="text-[7px] text-zinc-500 font-bold uppercase mt-1">SISTEMA v3.8 | FEEDBACK ATIVO</p>
                 </div>
             </div>
             <div class="flex items-center gap-4 md:gap-8">
                 <div class="text-right">
-                    <p class="text-[8px] uppercase text-zinc-500">Temporizador</p>
+                    <p class="text-[8px] uppercase text-zinc-500">Cronômetro</p>
                     <p id="timer" class="text-lg font-black text-zinc-100 tabular-nums">20:00</p>
                 </div>
                 <div class="text-right border-l border-zinc-800 pl-4 md:pl-8">
@@ -122,28 +124,28 @@
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black">Nome do Aluno</label>
-                    <input type="text" id="student-name" class="w-full bg-black border border-zinc-800 p-3 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 uppercase transition-all" placeholder="INSIRA SEU NOME...">
+                    <label class="block text-[9px] uppercase text-zinc-500 mb-1 font-black">Identificador (Nome Completo)</label>
+                    <input type="text" id="student-name" class="w-full bg-black border border-zinc-800 p-3 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 uppercase transition-all" placeholder="NOME DO ALUNO...">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black">Matrícula</label>
-                        <input type="text" id="student-reg" class="w-full bg-black border border-zinc-800 p-3 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition-all" placeholder="Nº MATRÍCULA">
+                        <label class="block text-[9px] uppercase text-zinc-500 mb-1 font-black">Nº Matrícula</label>
+                        <input type="text" id="student-reg" class="w-full bg-black border border-zinc-800 p-3 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition-all" placeholder="MATRÍCULA">
                     </div>
                     <div>
-                        <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black">Turma</label>
-                        <input type="text" id="student-turma" class="w-full bg-black border border-zinc-800 p-3 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition-all uppercase" placeholder="TURMA">
+                        <label class="block text-[9px] uppercase text-zinc-500 mb-1 font-black">Turma</label>
+                        <input type="text" id="student-turma" class="w-full bg-black border border-zinc-800 p-3 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition-all uppercase" placeholder="EX: MED A">
                     </div>
                 </div>
                 <button id="login-btn" class="btn-tactical w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded uppercase tracking-widest text-xs mt-4 shadow-lg">
-                    Autenticar Credenciais
+                    Autenticar Agente
                 </button>
                 <div class="pt-6 border-t border-zinc-800 mt-4 text-center">
                     <button onclick="emergencyReset()" class="text-[9px] text-zinc-600 hover:text-red-500 uppercase font-black transition-colors underline">
-                        [ Reiniciar Memória e Limpar Erros ]
+                        [ Limpar Memória e Erros ]
                     </button>
                 </div>
-                <p id="attempts-warning" class="hidden text-[8px] text-red-500 font-black text-center uppercase tracking-tighter mt-2">Limite de 5 tentativas atingido.</p>
+                <p id="attempts-warning" class="hidden text-[8px] text-red-500 font-black text-center uppercase mt-2">Limite de 5 tentativas atingido.</p>
             </div>
         </section>
 
@@ -154,11 +156,10 @@
                 Protocolo Operacional
             </h2>
             <div class="space-y-4 text-zinc-400 text-sm border-l-2 border-zinc-800 pl-6">
-                <p>• <span class="text-white font-bold">Progressão:</span> O sistema só libera o próximo setor após o acerto.</p>
-                <p>• <span class="text-white font-bold">Conteúdo:</span> 15 questões bioestatísticas reais.</p>
-                <p>• <span class="text-red-500 font-bold italic">Penalidade Erro:</span> Salto de <span class="text-white font-black">+1:30 min</span>.</p>
-                <p>• <span class="text-white font-bold italic">Justificativa:</span> Cada acerto revela a explicação técnica do dado.</p>
-                <p>• <span class="text-white font-bold">Finalização:</span> Tire print do relatório ao concluir.</p>
+                <p>• <span class="text-white font-bold">Progressão:</span> Avance apenas após a validação correta do dado.</p>
+                <p>• <span class="text-white font-bold">Feedback:</span> Justificativas técnicas serão exibidas em cada escolha.</p>
+                <p>• <span class="text-red-500 font-bold italic">Penalidade Tempo:</span> Erro tático resulta em <span class="text-white font-black">+1:30 min</span>.</p>
+                <p>• <span class="text-white font-bold">Limite:</span> Máximo de 5 tentativas por nome.</p>
             </div>
             <button id="start-btn" class="btn-tactical w-full mt-10 bg-amber-600 hover:bg-amber-500 text-white font-black py-5 rounded uppercase text-xs shadow-xl tracking-widest">
                 Iniciar Operação (Ativar Som)
@@ -180,7 +181,7 @@
                     <div id="options-box" class="grid grid-cols-1 gap-3 mb-6"></div>
                     
                     <div id="feedback-area">
-                        <div id="feedback-status" class="hidden p-4 rounded-sm border-l-4 mb-2 text-[10px] font-black uppercase tracking-wider"></div>
+                        <div id="feedback-status" class="hidden p-3 rounded-sm border-l-4 mb-2 text-[10px] font-black uppercase tracking-wider"></div>
                         <div id="justification-box" class="hidden justification-box mb-6"></div>
                     </div>
 
@@ -189,12 +190,12 @@
             </div>
             <div class="lg:col-span-4 space-y-4">
                 <div class="terminal-border bg-zinc-900 p-4 rounded-sm">
-                    <h4 class="text-[8px] uppercase text-zinc-500 font-black mb-4 tracking-widest">Estabilidade de Dados</h4>
+                    <h4 class="text-[8px] uppercase text-zinc-500 font-black mb-4 tracking-widest">Frequência de Evidência</h4>
                     <div class="chart-container"><canvas id="game-chart"></canvas></div>
                 </div>
                 <div class="bg-zinc-900/30 p-4 border border-zinc-800 rounded text-[9px] text-zinc-500 space-y-2">
                     <div class="flex justify-between"><span>AGENTE:</span> <span id="dash-name" class="text-emerald-500 font-bold uppercase truncate max-w-[120px]"></span></div>
-                    <div class="flex justify-between"><span>TURMA:</span> <span id="dash-turma" class="text-zinc-400 font-bold uppercase"></span></div>
+                    <div class="flex justify-between"><span>TURMA:</span> <span id="dash-turma" class="text-zinc-300 font-bold uppercase"></span></div>
                     <div class="flex justify-between"><span>TENTATIVA:</span> <span id="dash-attempt" class="text-zinc-400 font-bold"></span></div>
                 </div>
             </div>
@@ -205,10 +206,10 @@
             <h2 class="text-4xl font-black text-emerald-500 mb-2 italic uppercase">Missão Concluída</h2>
             <div class="bg-black p-8 rounded border border-zinc-800 text-left space-y-6 mb-6">
                 <div class="grid grid-cols-2 gap-4">
-                    <div><p class="text-[8px] uppercase text-zinc-500">Identificado:</p><p id="res-name" class="text-lg font-bold text-white uppercase"></p></div>
-                    <div><p class="text-[8px] uppercase text-zinc-500">Turma:</p><p id="res-turma" class="text-lg font-bold text-emerald-500 uppercase"></p></div>
+                    <div><p class="text-[8px] uppercase text-zinc-500 font-black">Identificado:</p><p id="res-name" class="text-lg font-bold text-white uppercase"></p></div>
+                    <div><p class="text-[8px] uppercase text-zinc-500 font-black">Turma:</p><p id="res-turma" class="text-lg font-bold text-emerald-500 uppercase"></p></div>
                 </div>
-                <div><p class="text-[8px] uppercase text-zinc-500">Matrícula:</p><p id="res-reg" class="text-lg font-bold text-zinc-300"></p></div>
+                <div><p class="text-[8px] uppercase text-zinc-500 font-black">Matrícula:</p><p id="res-reg" class="text-lg font-bold text-zinc-300"></p></div>
                 <div class="border-t border-zinc-800 pt-6 text-center">
                     <p class="text-[8px] uppercase text-zinc-500 font-black">Patrimônio Final (Nota):</p>
                     <p id="res-score" class="text-7xl font-black text-amber-500 italic"></p>
@@ -217,14 +218,14 @@
             <div class="bg-emerald-950/20 border border-emerald-800/40 p-4 rounded mb-8 shadow-inner">
                 <p class="text-emerald-400 font-black text-xs uppercase tracking-[0.1em] blink-soft">📷 TIRE UM PRINT E ANEXE NA ATIVIDADE!</p>
             </div>
-            <p id="sync-msg" class="text-[9px] text-zinc-500 uppercase font-bold mb-8 italic">Transmissão para o comando...</p>
+            <p id="sync-msg" class="text-[9px] text-zinc-500 uppercase font-bold mb-8 italic">Transmitindo dados ao Centro de Comando...</p>
             <button onclick="emergencyReset()" class="text-[9px] text-zinc-600 hover:text-emerald-500 uppercase font-black underline transition-colors">[ Reiniciar Sistema ]</button>
         </section>
 
     </main>
 
     <script>
-        const APP_VERSION = "3.7";
+        const APP_VERSION = "3.8";
         const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwahFPVX1FXcJnO8hoB6Cz0CRdzL8B8v3-krnagtJtvlyGVNJrrcyWqAJTqrD03x2t5/exec";
 
         const questions = [
@@ -233,105 +234,180 @@
                 q: "Estudo de coorte com 4.000 indivíduos. Incidência IAM/1.000 sedentários: 20 (30-39a) e 120 (50-59a). Ativos: 5 (30-39a) e 80 (50-59a). Quais os RRs estratificados por idade?", 
                 o: ["RR=0,25 e RR=0,66", "RR=1,50 e RR=1,25", "RR=15,0 e RR=40,0", "RR=4,00 e RR=1,50"], 
                 a: 3,
-                j: "JUSTIFICATIVA: RR = Incidência Expostos / Incidência Não Expostos. Para 30-39 anos: 20/5 = 4.0. Para 50-59 anos: 120/80 = 1.5. Indica que o sedentarismo aumenta em 4x o risco nos jovens."
+                j_correct: "CORRETO: RR = Incidência Expostos / Incidência Não Expostos. Para 30-39 anos: 20/5 = 4.0. Para 50-59 anos: 120/80 = 1.5. O risco é maior nos jovens sedentários.",
+                j_wrongs: [
+                    "ERRO: Você inverteu o cálculo (Não Expostos / Expostos).",
+                    "ERRO: Valores de incidência absoluta usados de forma incorreta.",
+                    "ERRO: Erro de escala decimal no cálculo da taxa por mil."
+                ]
             },
             { 
                 t: "Morbimortalidade", 
                 q: "Norte: 12.500 casos e 200 óbitos. Sul: 45.000 casos e 450 óbitos. Qual região apresentou maior gravidade da doença e por quê?", 
-                o: ["Região Sul, pois óbitos (450) são quase o dobro", "Região Norte, com Letalidade de 1,6%", "Ambas com mesma gravidade (Letalidade 1%)", "Região Sul, devido à incidência acumulada"], 
+                o: ["Região Sul, pois o número absoluto de óbitos é maior", "Região Norte, com Letalidade de 1,6%", "Ambas apresentam a mesma gravidade (1%)", "Região Sul, devido à incidência acumulada"], 
                 a: 1,
-                j: "JUSTIFICATIVA: A gravidade clínica é medida pela Letalidade (Óbitos/Casos). Norte: 200/12.500 = 1,6%. Sul: 450/45.000 = 1,0%. A região Norte mata mais entre os infectados."
+                j_correct: "CORRETO: A gravidade é medida pela Letalidade (Óbitos/Casos). Norte: 200/12.500 = 1,6%. Sul: 450/45.000 = 1,0%.",
+                j_wrongs: [
+                    "ERRO: Números absolutos não comparam gravidade entre populações de tamanhos diferentes.",
+                    "ERRO: O cálculo da Letalidade da Região Norte é superior a 1%.",
+                    "ERRO: Incidência mede novos casos, não a gravidade dos casos existentes."
+                ]
             },
             { 
                 t: "Validação de Teste", 
                 q: "Teste aplicado em 500 pessoas (100 doentes). 90 positivos entre doentes e 40 positivos entre saudáveis. Qual o Valor Preditivo Positivo (VPP)?", 
                 o: ["90,3%", "30,8%", "69,2%", "18%"], 
                 a: 2,
-                j: "JUSTIFICATIVA: VPP = Verdadeiros Positivos / Total de Testes Positivos. VPP = 90 / (90 + 40) = 90 / 130 ≈ 69,2%."
-            },
-            { 
-                t: "Odds Ratio e Precisão", 
-                q: "Estudo de caso-controle revelou OR de 3,2 com IC95% entre 2,4 e 4,1 para sedentarismo e IAM. Como interpretar a associação?", 
-                o: ["Significativo e preciso (IC não inclui 1,0 e é estreito)", "Clinicamente irrelevante (limite inferior perto de 1,0)", "Baixa precisão (amplitude superior a 1,0)", "Váriavel de confusão (OR diverge do IC)"], 
-                a: 0,
-                j: "JUSTIFICATIVA: O IC95% não inclui o valor de nulidade (1,0), garantindo significância estatística. A pequena distância entre os limites (2,4 a 4,1) indica boa precisão amostral."
-            },
-            { 
-                t: "Indicadores de Saúde", 
-                q: "Localidade de 1,5M pessoas. Em 2023: 493 novos casos notificados. Monitoramento: 2.363 pessoas em tratamento ativo. O que representa os 2.363?", 
-                o: ["Coeficiente de Incidência", "Prevalência Absoluta", "Prevalência por Coeficiente", "Incidência por Densidade"], 
-                a: 1,
-                j: "JUSTIFICATIVA: Prevalência Absoluta representa o número total de casos (novos + antigos) existentes em um dado momento. A incidência refere-se apenas aos 493 casos novos."
-            },
-            { 
-                t: "Julgamento Clínico", 
-                q: "Em mutirão de rastreamento (baixa prevalência), um teste dá Positivo, mas o VPP é de apenas 10%. Qual a conduta segura?", 
-                o: ["Iniciar tratamento padrão imediatamente", "Solicitar teste confirmatório de alta especificidade", "Notificar como confirmado e acalmar o paciente", "Descartar o resultado por falta de validade"], 
-                a: 1,
-                j: "JUSTIFICATIVA: Se o VPP é de 10%, 90% dos positivos são 'Falsos Positivos'. Em doenças raras, testes positivos de triagem sempre exigem confirmação com alta especificidade."
-            },
-            { 
-                t: "Critérios de Hill", 
-                q: "Segundo Hill, a causalidade entre ultraprocessados e câncer colorretal é fortalecida pela CONSISTÊNCIA quando:", 
-                o: ["O mecanismo biológico é explicado pela fisiopatologia", "Associação observada por diferentes pesquisadores em diferentes populações", "Exposição precede obrigatoriamente o desfecho", "Interrupção da ingestão reduz a incidência"], 
-                a: 1,
-                j: "JUSTIFICATIVA: O critério de consistência diz que a relação de causa-efeito é mais provável se diversos estudos independentes chegarem ao mesmo resultado clínico."
-            },
-            { 
-                t: "Delineamento", 
-                q: "Pesquisador seleciona doentes com mesotelioma e saudáveis para investigar exposição prévia ao amianto. Qual o estudo?", 
-                o: ["Ensaio Clínico Randomizado", "Estudo de Coorte", "Estudo de Caso-Controle", "Estudo Transversal"], 
-                a: 2,
-                j: "JUSTIFICATIVA: O estudo começa com o desfecho já ocorrido (doentes vs saudáveis) e volta no tempo para ver a exposição. Isso caracteriza o desenho de Caso-Controle."
-            },
-            { 
-                t: "Variáveis Estatísticas", 
-                q: "Ao solicitar que o paciente classifique sua dor lombar em 'Leve', 'Moderada' ou 'Grave', que tipo de dado é coletado?", 
-                o: ["Quantitativa Discreta", "Qualitativa Nominal", "Qualitativa Ordinal", "Quantitativa Contínua"], 
-                a: 2,
-                j: "JUSTIFICATIVA: Variáveis qualitativas ordinais representam categorias que possuem uma hierarquia ou ordem lógica (leve < moderada < grave)."
-            },
-            { 
-                t: "Variável de Confusão", 
-                q: "Associação café/câncer sumiu ao ajustar pelo tabagismo. Concluiu-se que o fumo era a causa real. O tabagismo aqui é:", 
-                o: ["Fator de Proteção", "Variável de Confusão", "Viés de Memória", "Erro sistemático de seleção"], 
-                a: 1,
-                j: "JUSTIFICATIVA: Confusão ocorre quando um fator (fumo) está associado à exposição (café) e ao desfecho (câncer), distorcendo o resultado original do estudo."
-            },
-            { 
-                t: "Acompanhamento (Gráfico)", 
-                q: "Gráfico de câncer de pulmão em 10 mil pessoas por 3 anos. Qual medida expressa a força e persistência do surgimento de novos casos?", 
-                o: ["Prevalência no início do período", "Incidência Acumulada", "Letalidade Hospitalar", "Taxa de Ataque Secundária"], 
-                a: 1,
-                j: "JUSTIFICATIVA: A incidência expressa a força da doença, ou seja, o risco de indivíduos suscetíveis adoecerem ao longo de um período determinado."
-            },
-            { 
-                t: "Impacto da Terapia", 
-                q: "Terapias de DM2 controlam glicemia e reduzem mortalidade, mas não promovem a cura. O que se espera da taxa de PREVALÊNCIA?", 
-                o: ["Redução da prevalência", "Manutenção da prevalência", "Aumento da prevalência", "Queda drástica"], 
-                a: 2,
-                j: "JUSTIFICATIVA: Se a incidência é contínua e as pessoas vivem mais com a doença (não morrem e não curam), o estoque de doentes na população (Prevalência) aumenta."
-            },
-            { 
-                t: "Segurança em Hemocentro", 
-                q: "Após triagem inicial 'Reagente', qual indicador deve ser PRIORIZADO no teste confirmatório ( Western Blot / PCR)?", 
-                o: ["Alta Sensibilidade", "Alta Especificidade", "Baixo Valor Preditivo Negativo", "Alta Sensibilidade para triagem secundária"], 
-                a: 1,
-                j: "JUSTIFICATIVA: Na triagem (1º teste) queremos sensibilidade para não deixar passar ninguém. Na confirmação (2º teste) queremos especificidade para garantir que o diagnóstico positivo seja verdadeiro."
+                j_correct: "CORRETO: VPP = Verdadeiros Positivos / Total de Testes Positivos. VPP = 90 / (90 + 40) = 90 / 130 ≈ 69,2%.",
+                j_wrongs: [
+                    "ERRO: Este valor aproximado refere-se à sensibilidade, não ao VPP.",
+                    "ERRO: Você calculou a probabilidade de ser falso-positivo.",
+                    "ERRO: Valor muito baixo, não condiz com a proporção de acertos positivos."
+                ]
             },
             { 
                 t: "Razão de Verossimilhança", 
                 q: "Teste com Sensibilidade 80% e Especificidade 90%. Qual a Razão de Verossimilhança Positiva (RV+)?", 
                 o: ["RV+ = 0,8", "RV+ = 8,0", "RV+ = 1,1", "RV+ = 9,0"], 
                 a: 1,
-                j: "JUSTIFICATIVA: RV+ = Sensibilidade / (1 - Especificidade) = 0,80 / (1 - 0,90) = 0,80 / 0,10 = 8,0. Indica quanto o resultado positivo aumenta a chance de doença."
+                j_correct: "CORRETO: RV+ = Sensibilidade / (1 - Especificidade) = 0,80 / (1 - 0,90) = 0,80 / 0,10 = 8,0.",
+                j_wrongs: [
+                    "ERRO: Você apenas usou o valor da sensibilidade.",
+                    "ERRO: Cálculo incorreto da probabilidade condicional.",
+                    "ERRO: Valor de RV+ deve ser superior a 1 para ser útil no diagnóstico."
+                ]
             },
             { 
-                t: "Cálculo de Letalidade", 
-                q: "Cidade de 100k hab. 2000 casos novos de malária. 95 mortes diretas. Qual a Letalidade?", 
-                o: ["0,095%", "2,1%", "0,02%", "4,75%"], 
-                a: 3,
-                j: "JUSTIFICATIVA: Letalidade = (Mortes / Doentes) x 100. L = (95 / 2000) x 100 = 4,75%. Diferente da mortalidade, que usaria a população total."
+                t: "Indicadores de Saúde", 
+                q: "Localidade de 1,5M pessoas. 493 novos casos em 2023. Ao final do ano, 2.363 em tratamento ativo. O que representa os 2.363?", 
+                o: ["Coeficiente de Incidência", "Prevalência Absoluta", "Incidência por Densidade", "Letalidade"], 
+                a: 1,
+                j_correct: "CORRETO: Prevalência Absoluta representa o estoque total de doentes (casos novos + antigos) em um momento específico.",
+                j_wrongs: [
+                    "ERRO: Incidência refere-se apenas aos 493 casos novos surgidos no ano.",
+                    "ERRO: Densidade de incidência exige cálculo de tempo-pessoa exposto.",
+                    "ERRO: Letalidade mede óbitos entre doentes, não o total de pessoas em tratamento."
+                ]
+            },
+            { 
+                t: "Julgamento Clínico", 
+                q: "Em doença rara, um teste rápido dá Positivo, mas o VPP é de apenas 10%. Qual a conduta segura?", 
+                o: ["Iniciar tratamento imediatamente", "Solicitar teste confirmatório de alta especificidade", "Notificar como confirmado e tranquilizar o paciente", "Descartar o resultado por perda de validade"], 
+                a: 1,
+                j_correct: "CORRETO: Com VPP de 10%, há 90% de chance de ser um Falso Positivo. Testes confirmatórios altamente específicos são essenciais.",
+                j_wrongs: [
+                    "ERRO: Tratamento imediato sem confirmação em baixa prevalência gera iatrogenia.",
+                    "ERRO: A notificação exige critérios de confirmação diagnóstica robustos.",
+                    "ERRO: O teste não perdeu validade; o VPP baixo é uma característica intrínseca em doenças raras."
+                ]
+            },
+            { 
+                t: "Critérios de Hill", 
+                q: "A causalidade entre ultraprocessados e câncer colorretal é fortalecida pela CONSISTÊNCIA quando:", 
+                o: ["O mecanismo biológico é explicado", "Associação observada repetidamente por diferentes pesquisadores e populações", "Exposição precede obrigatoriamente o desfecho", "Interrupção do fator reduz a incidência"], 
+                a: 1,
+                j_correct: "CORRETO: Consistência significa que os achados são replicáveis em diferentes contextos e por diferentes grupos de pesquisa.",
+                j_wrongs: [
+                    "ERRO: Isso refere-se à Plausibilidade Biológica.",
+                    "ERRO: Isso refere-se à Temporalidade.",
+                    "ERRO: Isso refere-se à Evidência Experimental."
+                ]
+            },
+            { 
+                t: "NNT", 
+                q: "Ensaio clínico: Incidência Intervenção 2%, Controle 5%. Qual o Número Necessário para Tratar (NNT) para prevenir 1 evento?", 
+                o: ["20 pacientes", "33 pacientes", "50 pacientes", "100 pacientes"], 
+                a: 1,
+                j_correct: "CORRETO: RAR = 5% - 2% = 3% (0,03). NNT = 1 / 0,03 ≈ 33,3.",
+                j_wrongs: [
+                    "ERRO: Erro no cálculo da Redução Absoluta do Risco.",
+                    "ERRO: Valor incorreto para a taxa de prevenção calculada.",
+                    "ERRO: Cálculo baseado em Risco Relativo, não em RAR."
+                ]
+            },
+            { 
+                t: "Delineamento", 
+                q: "Pesquisador seleciona pessoas doentes (mesotelioma) e saudáveis para investigar exposição prévia ao amianto. Qual o estudo?", 
+                o: ["Ensaio Clínico", "Estudo de Coorte", "Estudo de Caso-Controle", "Estudo Transversal"], 
+                a: 2,
+                j_correct: "CORRETO: Estudos que partem do desfecho (doentes vs sadios) e olham para trás para ver a exposição são Caso-Controle.",
+                j_wrongs: [
+                    "ERRO: Ensaios clínicos são experimentais e prospectivos.",
+                    "ERRO: Coorte parte da exposição para o desfecho futuro.",
+                    "ERRO: Estudo transversal avalia exposição e desfecho simultaneamente."
+                ]
+            },
+            { 
+                t: "Variáveis", 
+                q: "Ao classificar a dor em 'Leve', 'Moderada' ou 'Grave', qual o tipo de variável?", 
+                o: ["Quantitativa Discreta", "Qualitativa Nominal", "Qualitativa Ordinal", "Quantitativa Contínua"], 
+                a: 2,
+                j_correct: "CORRETO: São categorias qualitativas com uma ordem ou hierarquia lógica.",
+                j_wrongs: [
+                    "ERRO: Variáveis quantitativas discretas são números inteiros (contagem).",
+                    "ERRO: Nominais não possuem ordem (ex: sexo, cor dos olhos).",
+                    "ERRO: Contínuas são medições numéricas (ex: peso, altura)."
+                ]
+            },
+            { 
+                t: "Variável de Confusão", 
+                q: "Associação café/câncer sumiu ao ajustar pelo tabagismo. O tabagismo neste cenário é:", 
+                o: ["Fator de Proteção", "Variável de Confusão", "Viés de Memória", "Erro de Seleção"], 
+                a: 1,
+                j_correct: "CORRETO: Confusão ocorre quando um terceiro fator distorce a relação entre a exposição principal e o desfecho.",
+                j_wrongs: [
+                    "ERRO: Fator de proteção reduziria o risco do desfecho.",
+                    "ERRO: Viés de memória é erro de relato em estudos retrospectivos.",
+                    "ERRO: Erro de seleção é falha na composição dos grupos amostrais."
+                ]
+            },
+            { 
+                t: "Curva ROC", 
+                q: "Teste para esteatose hepática apresenta Área sob a Curva (AUC) de 0,85. Como interpretar?", 
+                o: ["Teste pobre (precisa ser 1,0)", "Boa capacidade discriminatória", "Alta taxa de falso-positivos fixa", "Precisão de 85%"], 
+                a: 1,
+                j_correct: "CORRETO: Valores de AUC entre 0,8 e 0,9 indicam um teste com boa acurácia diagnóstica geral.",
+                j_wrongs: [
+                    "ERRO: 1,0 é o teste perfeito, mas 0,85 é clinicamente muito bom.",
+                    "ERRO: AUC não fixa taxa de falso-positivos; ela avalia o teste em todos os pontos.",
+                    "ERRO: AUC mede probabilidade discriminatória, não é sinônimo direto de precisão simples."
+                ]
+            },
+            { 
+                t: "DM2 e Prevalência", 
+                q: "Terapias de DM2 controlam glicemia e reduzem mortalidade, mas não curam a doença. O que se espera da taxa de PREVALÊNCIA?", 
+                o: ["Redução", "Manutenção", "Aumento", "Queda drástica"], 
+                a: 2,
+                j_correct: "CORRETO: Com maior sobrevida e sem cura, o número de pessoas vivendo com a doença (Prevalência) tende a aumentar.",
+                j_wrongs: [
+                    "ERRO: Sem cura, o estoque de doentes não diminui.",
+                    "ERRO: A manutenção ocorreria apenas se a incidência parasse ou a mortalidade fosse alta.",
+                    "ERRO: A queda drástica só ocorreria com erradicação ou cura em massa."
+                ]
+            },
+            { 
+                t: "Segurança em Hemocentro", 
+                q: "Após triagem inicial 'Reagente', qual indicador deve ser PRIORIZADO no teste confirmatório (Western Blot)?", 
+                o: ["Alta Sensibilidade", "Alta Especificidade", "Baixo VPN", "Sensibilidade moderada"], 
+                a: 1,
+                j_correct: "CORRETO: Em testes de confirmação, prioriza-se a especificidade para garantir que não haja falsos diagnósticos positivos.",
+                j_wrongs: [
+                    "ERRO: Sensibilidade é prioridade no primeiro teste (triagem).",
+                    "ERRO: Valor Preditivo Negativo é útil para descartar doenças, não para confirmar.",
+                    "ERRO: Moderação não é desejada em testes laboratoriais de segurança biológica."
+                ]
+            },
+            { 
+                t: "Distribuição Normal", 
+                q: "Em distribuição normal, média 3200g e DP 400g. Qual a % aproximada de bebês entre 2400g e 4000g?", 
+                o: ["50%", "68%", "95%", "99%"], 
+                a: 2,
+                j_correct: "CORRETO: O intervalo (2400 a 4000) corresponde a Média ± 2 Desvios Padrões. Na curva normal, isso abrange 95% dos dados.",
+                j_wrongs: [
+                    "ERRO: 50% refere-se apenas a um lado da média.",
+                    "ERRO: 68% refere-se a apenas 1 Desvio Padrão.",
+                    "ERRO: 99% refere-se a 3 Desvios Padrões."
+                ]
             }
         ];
 
@@ -389,23 +465,25 @@
 
         const checkAnswer = (idx, btn) => {
             const q = questions[state.level];
-            const feedbackStatus = document.getElementById('feedback-status');
-            const justificationBox = document.getElementById('justification-box');
+            const fStatus = document.getElementById('feedback-status');
+            const jBox = document.getElementById('justification-box');
             const btns = document.querySelectorAll('#options-box button');
 
             if (idx === q.a) {
+                // ACERTO
                 btns.forEach(b => b.onclick = null);
                 btn.classList.add('correct');
-                feedbackStatus.innerHTML = "STATUS: Evidência Confirmada. Próximo setor liberado.";
-                feedbackStatus.className = "p-4 rounded-sm border-l-4 mb-2 text-[10px] font-black uppercase tracking-wider bg-emerald-900/10 border-emerald-500 text-emerald-500 block";
+                fStatus.innerHTML = "STATUS: Evidência Confirmada.";
+                fStatus.className = "p-3 rounded-sm border-l-4 mb-2 text-[10px] font-black uppercase tracking-wider bg-emerald-900/10 border-emerald-500 text-emerald-500 block";
                 
-                justificationBox.innerHTML = q.j;
-                justificationBox.classList.remove('hidden');
+                jBox.innerHTML = q.j_correct;
+                jBox.className = "justification-box just-correct mb-6 block";
                 
                 document.getElementById('next-btn').classList.remove('hidden');
                 updateChart(90);
-                notify("SINAL VERDE");
+                notify("DADO VALIDADO");
             } else {
+                // ERRO
                 if (state.audio) {
                     const siren = document.getElementById('siren-sound');
                     siren.currentTime = 0;
@@ -418,10 +496,15 @@
                 document.getElementById('quest-container').classList.add('penalty-flash');
                 setTimeout(() => document.getElementById('quest-container').classList.remove('penalty-flash'), 500);
                 
-                feedbackStatus.innerHTML = "ALERTA: Violação técnica detectada (+1m30s). Corrija o dado.";
-                feedbackStatus.className = "p-4 rounded-sm border-l-4 mb-2 text-[10px] font-black uppercase tracking-wider bg-red-900/10 border-red-500 text-red-500 block";
+                fStatus.innerHTML = "ALERTA: Falha Técnica (+1m30s).";
+                fStatus.className = "p-3 rounded-sm border-l-4 mb-2 text-[10px] font-black uppercase tracking-wider bg-red-900/10 border-red-500 text-red-500 block";
+                
+                jBox.innerHTML = q.j_wrongs[idx < q.a ? idx : idx - 1] || "JUSTIFICATIVA: Alternativa incorreta. Revise os conceitos bioestatísticos.";
+                jBox.className = "justification-box just-wrong block";
+                jBox.classList.remove('hidden');
+
                 updateChart(20);
-                notify("FALHA DE DADOS", "error");
+                notify("VIOLAÇÃO TÁTICA", "error");
             }
             updateUI();
             save();
@@ -445,7 +528,7 @@
             document.getElementById('res-turma').textContent = state.turma;
             document.getElementById('res-score').textContent = state.score.toFixed(2);
             
-            // Ordem da planilha: aluno, matricula, turma, nota, tempo, timestamp
+            // Ordem: aluno, matricula, turma, nota, tempo, timestamp
             fetch(GOOGLE_SHEET_URL, {
                 method: 'POST',
                 mode: 'no-cors',
