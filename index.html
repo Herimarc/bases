@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <title>Operação Sentinela - Prof. Heriton Marcelo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -48,22 +49,17 @@
         .screen-grid { display: none; }
         .screen-grid.active { display: grid; }
 
-        .btn-tactical {
-            transition: all 0.2s ease;
-        }
+        .btn-tactical { transition: all 0.2s ease; }
         .btn-tactical:active { transform: scale(0.98); }
 
-        .penalty-flash {
-            animation: flash-red 0.5s;
-        }
-        @keyframes flash-red {
+        .option-btn.wrong { border-color: #ef4444 !important; background-color: rgba(127, 29, 29, 0.2) !important; color: #f87171 !important; opacity: 0.6; }
+        .option-btn.correct { border-color: #10b981 !important; background-color: rgba(6, 78, 59, 0.2) !important; color: #34d399 !important; font-weight: bold; }
+
+        .penalty-flash { animation: flash-red 0.5s; }
+        @keyframes flash-red { 
             0% { background-color: rgba(239, 68, 68, 0.2); }
             100% { background-color: transparent; }
         }
-
-        /* Melhoria visual nas opções */
-        .option-btn.wrong { border-color: #ef4444 !important; background-color: rgba(127, 29, 29, 0.2) !important; color: #f87171 !important; }
-        .option-btn.correct { border-color: #10b981 !important; background-color: rgba(6, 78, 59, 0.2) !important; color: #34d399 !important; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative overflow-x-hidden">
@@ -72,7 +68,6 @@
 
     <div id="notification-area" class="fixed top-4 right-4 z-[100] flex flex-col gap-2 w-72 pointer-events-none"></div>
 
-    <!-- Áudios -->
     <audio id="bg-music" loop preload="auto">
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
@@ -80,22 +75,21 @@
         <source src="https://www.myinstants.com/media/sounds/airhorn.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Header -->
-    <header id="app-header" class="hidden bg-zinc-900 border-b border-zinc-800 p-4 sticky top-0 z-50">
+    <header id="app-header" class="hidden bg-zinc-900 border-b border-zinc-800 p-4 sticky top-0 z-50 shadow-lg">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-emerald-600 text-white flex items-center justify-center font-black rounded shadow-lg">HM</div>
+                <div class="w-10 h-10 bg-emerald-600 text-white flex items-center justify-center font-black rounded shadow-md">HM</div>
                 <div>
                     <h1 class="text-xs font-black text-emerald-500 uppercase tracking-tighter">Operação Sentinela</h1>
-                    <p class="text-[8px] text-zinc-500 font-bold uppercase">SISTEMA v3.4 | FINAL</p>
+                    <p class="text-[8px] text-zinc-500 font-bold uppercase">v3.6 | MULTI-TURMA</p>
                 </div>
             </div>
-            <div class="flex items-center gap-4 md:gap-8">
+            <div class="flex items-center gap-6">
                 <div class="text-right">
-                    <p class="text-[8px] uppercase text-zinc-500">Cronómetro</p>
+                    <p class="text-[8px] uppercase text-zinc-500">Temporizador</p>
                     <p id="timer" class="text-lg font-black text-zinc-100 tabular-nums">20:00</p>
                 </div>
-                <div class="text-right border-l border-zinc-800 pl-4 md:pl-8">
+                <div class="text-right border-l border-zinc-800 pl-6">
                     <p class="text-[8px] uppercase text-zinc-500">Nota</p>
                     <p id="score" class="text-lg font-black text-amber-500">1.50</p>
                 </div>
@@ -110,27 +104,33 @@
 
         <!-- 1. LOGIN -->
         <section id="login-screen" class="screen active terminal-border bg-zinc-900 p-6 md:p-10 rounded shadow-2xl max-w-md mx-auto w-full">
-            <div class="mb-8">
-                <h2 class="text-3xl font-black text-emerald-500 mb-1 uppercase italic tracking-tighter">Acesso Restrito</h2>
-                <div class="h-1 w-20 bg-emerald-600"></div>
-                <p class="text-zinc-500 text-[10px] mt-4 font-bold tracking-widest uppercase">Bases Científicas da Medicina</p>
+            <div class="mb-8 text-center md:text-left">
+                <h2 class="text-3xl font-black text-emerald-500 mb-1 uppercase italic tracking-tighter">Acesso Agente</h2>
+                <div class="h-1 w-20 bg-emerald-600 mx-auto md:mx-0"></div>
+                <p class="text-zinc-500 text-[10px] mt-4 font-bold tracking-widest uppercase italic">Bases Científicas da Medicina</p>
             </div>
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black">Identificador de Agente (Nome)</label>
-                    <input type="text" id="student-name" class="w-full bg-black border border-zinc-800 p-4 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 uppercase transition-all" placeholder="INSIRA O NOME...">
+                    <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black">Nome Completo</label>
+                    <input type="text" id="student-name" class="w-full bg-black border border-zinc-800 p-3 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 uppercase transition-all" placeholder="INSIRA SEU NOME...">
                 </div>
-                <div>
-                    <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black">Matrícula</label>
-                    <input type="text" id="student-reg" class="w-full bg-black border border-zinc-800 p-4 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500" placeholder="DIGITE A MATRÍCULA...">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black">Matrícula</label>
+                        <input type="text" id="student-reg" class="w-full bg-black border border-zinc-800 p-3 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition-all" placeholder="Nº MATRÍCULA">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black">Turma</label>
+                        <input type="text" id="student-turma" class="w-full bg-black border border-zinc-800 p-3 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition-all uppercase" placeholder="EX: MED A1">
+                    </div>
                 </div>
                 <button id="login-btn" class="btn-tactical w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded uppercase tracking-widest text-xs mt-4 shadow-lg">
                     Autenticar Credenciais
                 </button>
                 <div class="pt-6 border-t border-zinc-800 mt-4 text-center">
                     <button onclick="emergencyReset()" class="text-[9px] text-zinc-600 hover:text-red-500 uppercase font-black transition-colors underline">
-                        [ Reiniciar Memória / Corrigir Erros ]
+                        [ Reiniciar Memória e Limpar Cache ]
                     </button>
                 </div>
                 <p id="attempts-warning" class="hidden text-[8px] text-red-500 font-black text-center uppercase tracking-tighter mt-2">Limite de 5 tentativas atingido.</p>
@@ -141,15 +141,15 @@
         <section id="rules-screen" class="screen terminal-border bg-zinc-900 p-6 md:p-10 rounded max-w-2xl mx-auto w-full">
             <h2 class="text-xl font-black text-amber-500 mb-8 uppercase tracking-tighter flex items-center gap-2">
                 <span class="w-2 h-2 bg-amber-500 animate-pulse"></span>
-                Protocolo de Missão
+                Protocolo Operacional
             </h2>
             <div class="space-y-4 text-zinc-400 text-sm border-l-2 border-zinc-800 pl-6">
-                <p>• <span class="text-white font-bold">Tentativas:</span> Limite de 5 acessos por identificador.</p>
-                <p>• <span class="text-white font-bold">Progresso:</span> Você deve acertar a questão para avançar.</p>
-                <p>• <span class="text-red-500 font-bold italic">Penalidade Tempo:</span> Cada erro adiciona <span class="text-white font-black">+1:30 min</span>.</p>
-                <p>• <span class="text-white font-bold">Penalidade Nota:</span> Erros em tempo extra subtraem <span class="text-red-400 font-bold">0.05 pts</span>.</p>
+                <p>• <span class="text-white font-bold">Turma Identificada:</span> Os dados serão salvos por grupo.</p>
+                <p>• <span class="text-white font-bold">Progressão:</span> Você só avança após acertar a resposta.</p>
+                <p>• <span class="text-red-500 font-bold italic">Penalidade Erro:</span> Salto de <span class="text-white font-black">+1:30 min</span>.</p>
+                <p>• <span class="text-white font-bold">Nota:</span> Início em 1.50. Erros em tempo extra retiram 0.05 pts.</p>
             </div>
-            <button id="start-btn" class="btn-tactical w-full mt-10 bg-amber-600 hover:bg-amber-500 text-white font-black py-5 rounded uppercase text-xs tracking-widest shadow-xl">
+            <button id="start-btn" class="btn-tactical w-full mt-10 bg-amber-600 hover:bg-amber-500 text-white font-black py-5 rounded uppercase text-xs shadow-xl tracking-widest">
                 Iniciar Operação (Ativar Som)
             </button>
         </section>
@@ -165,14 +165,12 @@
                         </div>
                         <span id="progress-text" class="text-[10px] text-zinc-600 font-bold tabular-nums"></span>
                     </div>
-
                     <div id="quest-body" class="bg-black/50 p-6 border border-zinc-800/50 rounded mb-8 text-sm leading-relaxed"></div>
                     <div id="options-box" class="grid grid-cols-1 gap-3 mb-6"></div>
                     <div id="feedback" class="hidden p-4 rounded-sm border-l-4 mb-4 text-[10px] font-black uppercase tracking-wider"></div>
-                    <button id="next-btn" class="hidden w-full bg-emerald-600 hover:bg-emerald-500 py-4 font-black text-white uppercase rounded text-[10px] tracking-[0.3em] shadow-lg">Processar Próximo Setor</button>
+                    <button id="next-btn" class="hidden w-full bg-emerald-600 hover:bg-emerald-500 py-4 font-black text-white uppercase rounded text-[10px] tracking-widest shadow-lg transition-all">Processar Próximo Setor</button>
                 </div>
             </div>
-
             <div class="lg:col-span-4 space-y-4">
                 <div class="terminal-border bg-zinc-900 p-4 rounded-sm">
                     <h4 class="text-[8px] uppercase text-zinc-500 font-black mb-4 tracking-widest">Estabilidade de Dados</h4>
@@ -180,6 +178,7 @@
                 </div>
                 <div class="bg-zinc-900/30 p-4 border border-zinc-800 rounded text-[9px] text-zinc-500 space-y-2">
                     <div class="flex justify-between"><span>AGENTE:</span> <span id="dash-name" class="text-emerald-500 font-bold uppercase truncate max-w-[120px]"></span></div>
+                    <div class="flex justify-between"><span>TURMA:</span> <span id="dash-turma" class="text-zinc-400 font-bold uppercase"></span></div>
                     <div class="flex justify-between"><span>TENTATIVA:</span> <span id="dash-attempt" class="text-zinc-400 font-bold"></span></div>
                 </div>
             </div>
@@ -188,74 +187,59 @@
         <!-- 4. RESULTADOS -->
         <section id="result-screen" class="screen terminal-border bg-zinc-900 p-8 rounded text-center max-w-xl mx-auto shadow-2xl">
             <h2 class="text-4xl font-black text-emerald-500 mb-2 italic uppercase">Missão Concluída</h2>
-            <div class="bg-black p-8 rounded border border-zinc-800 text-left space-y-6 mb-6 relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-2 text-[60px] opacity-[0.03] font-black pointer-events-none uppercase">SECRET</div>
+            <div class="bg-black p-8 rounded border border-zinc-800 text-left space-y-6 mb-6">
                 <div class="grid grid-cols-2 gap-4">
-                    <div><p class="text-[8px] uppercase text-zinc-500 font-black">Agente Identificado:</p><p id="res-name" class="text-lg font-bold text-white uppercase tracking-tighter"></p></div>
-                    <div><p class="text-[8px] uppercase text-zinc-500 font-black">Nº de Matrícula:</p><p id="res-reg" class="text-lg font-bold text-emerald-500 tracking-tighter"></p></div>
+                    <div><p class="text-[8px] uppercase text-zinc-500">Identificado:</p><p id="res-name" class="text-lg font-bold text-white uppercase"></p></div>
+                    <div><p class="text-[8px] uppercase text-zinc-500">Turma:</p><p id="res-turma" class="text-lg font-bold text-emerald-500 uppercase"></p></div>
+                    <div><p class="text-[8px] uppercase text-zinc-500">Matrícula:</p><p id="res-reg" class="text-lg font-bold text-zinc-300"></p></div>
                 </div>
-                <div class="border-t border-zinc-800 pt-6">
-                    <p class="text-[8px] uppercase text-zinc-500 font-black">Nota Final:</p>
-                    <p id="res-score" class="text-6xl font-black text-amber-500 italic tracking-tighter"></p>
+                <div class="border-t border-zinc-800 pt-6 text-center">
+                    <p class="text-[8px] uppercase text-zinc-500 font-black">Nota Final Atribuída:</p>
+                    <p id="res-score" class="text-7xl font-black text-amber-500 italic"></p>
                 </div>
             </div>
-
-            <div class="bg-emerald-950/20 border border-emerald-800/40 p-4 rounded mb-8">
-                <p class="text-emerald-400 font-black text-xs uppercase tracking-[0.1em] blink-soft">
-                    📷 TIRE UM PRINT DESTA TELA E ANEXE NA SUA ATIVIDADE!
-                </p>
+            <div class="bg-emerald-950/20 border border-emerald-800/40 p-4 rounded mb-8 shadow-inner">
+                <p class="text-emerald-400 font-black text-xs uppercase tracking-[0.1em] blink-soft">📷 TIRE UM PRINT E ANEXE NA ATIVIDADE!</p>
             </div>
-            
-            <p id="sync-msg" class="text-[9px] text-zinc-500 italic uppercase font-bold mb-8">Arquivando dados...</p>
-            <button onclick="emergencyReset()" class="text-[9px] text-zinc-500 hover:text-emerald-500 uppercase font-black underline">[ Reiniciar Sistema ]</button>
+            <p id="sync-msg" class="text-[9px] text-zinc-500 uppercase font-bold mb-8">Arquivando dados...</p>
+            <button onclick="emergencyReset()" class="text-[9px] text-zinc-600 hover:text-emerald-500 uppercase font-black underline">[ Reiniciar Sistema ]</button>
         </section>
 
     </main>
 
     <script>
-        const APP_VERSION = "3.4";
+        const APP_VERSION = "3.6";
         const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwahFPVX1FXcJnO8hoB6Cz0CRdzL8B8v3-krnagtJtvlyGVNJrrcyWqAJTqrD03x2t5/exec";
 
         const questions = [
-            { t: "Variáveis Bioestatísticas", q: "Ao analisar a 'Intensidade da Dor' (Leve, Moderada, Grave) e o 'Nível de Colesterol' (mg/dL) de acordo com a Aula 2, como classificamos essas variáveis?", o: ["Ambas Nominais", "Ordinal e Contínua", "Discreta e Ordinal", "Nominal e Discreta"], a: 1 },
-            { t: "Modelo Causal de Rubin", q: "O 'Problema Fundamental da Inferência Causal' (Aula 3) reside no fato de que:", o: ["Não podemos observar o mesmo indivíduo em dois estados diferentes ao mesmo tempo", "A estatística nunca é exata", "Sempre haverá erro de aferição nos prontuários", "A amostra é sempre limitada"], a: 0 },
-            { t: "Causalidade de Rothman", q: "No modelo de Rothman (Aula 3), uma causa que deve estar obrigatoriamente presente para que o desfecho ocorra é a:", o: ["Causa Suficiente", "Causa Necessária", "Causa Componente Irrelevante", "Causa Indireta"], a: 1 },
-            { t: "Medidas de Impacto", q: "Em um ensaio de estatinas (Texto 2), a incidência no grupo intervenção foi 2% e no placebo 5%. Qual a Redução do Risco Relativo (RRR)?", o: ["3%", "40%", "60%", "150%"], a: 2 },
-            { t: "Interpretação de Risco", q: "Um RR de 0,60 para uma nova droga indica que:", o: ["O risco aumentou 60%", "O risco reduziu 40%", "O risco é nulo", "A chance é 6 vezes maior"], a: 1 },
-            { t: "Vieses de Aferição", q: "Mães de crianças com malformações lembram melhor de exposições passadas. Isso causa qual impacto no Odds Ratio (OR)?", o: ["Subestima o risco", "Não impacta o cálculo", "Eleva artificialmente o OR (Falso-Positivo)", "Invalida a especificidade"], a: 2 },
-            { t: "Preditores de Teste", q: "Quanto maior a Prevalência de uma doença em uma população, o que acontece com os valores preditivos?", o: ["O VPP aumenta e o VPN diminui", "Ambos diminuem", "Ambos aumentam", "O VPP diminuem e o VPN aumenta"], a: 0 },
-            { t: "NNT (Number Needed to Treat)", q: "Se a Redução Absoluta do Risco (RAR) de um tratamento é de 10% (0.10), qual o Número Necessário para Tratar (NNT)?", o: ["1 paciente", "10 pacientes", "100 pacientes", "5 pacientes"], a: 1 },
-            { t: "Pressuposto SUTVA", q: "A premissa de que o tratamento de uma unidade não interfere no desfecho de outra (SUTVA) é violada principalmente em:", o: ["Cirurgias estéticas", "Doenças contagiosas e campanhas vacinais", "Tratamento de fraturas", "Uso de suplementos vitamínicos"], a: 1 },
-            { t: "Ética em Pesquisa (Res 466/12)", q: "Ao detectar um risco inesperado de evento adverso grave em um ensaio clínico, a atitude imediata deve ser:", o: ["Omitir o dado do relatório preliminar", "Notificar o CEP/CONEP e suspender a inclusão de novos sujeitos", "Continuar para não perder poder estatístico", "Alterar o desfecho principal para ocultar a falha"], a: 1 },
-            { t: "Critérios de Hill", q: "Qual o único critério de Hill considerado 'essencial' (sine qua non) para a causalidade?", o: ["Força de Associação", "Plausibilidade Biológica", "Temporalidade", "Consistência"], a: 2 },
-            { t: "Sistemas de Informação", q: "O sistema brasileiro responsável pela notificação de agravos compulsórios e vigilância sentinela é o:", o: ["SIM (Mortalidade)", "SINASC (Nascimentos)", "SINAN (Agravos de Notificação)", "SIH/SUS (Internações)"], a: 2 },
-            { t: "Hill - Dose-Resposta", q: "A relação onde o aumento da exposição aumenta linearmente o efeito observado é o critério de:", o: ["Coerência", "Gradiente Biológico", "Analogia", "Especificidade"], a: 1 },
-            { t: "Medicina Baseada em Evidência", q: "O deslocamento do eixo de decisão da 'eminência' para a 'evidência' significa fundamentalmente que:", o: ["Só a estatística importa no cuidado individual", "A plausibilidade biológica isolada não garante eficácia clínica", "A experiência clínica perdeu seu valor totalmente", "O paciente não deve participar da decisão"], a: 1 },
-            { t: "Razão de Verossimilhança", q: "Uma Razão de Verossimilhança Positiva (LR+) extremamente alta (>10) indica que o teste é:", o: ["Muito sensível para triagem", "Excelente para confirmar diagnóstico", "Muito barato para saúde pública", "Indiferente para a prática clínica"], a: 1 }
+            { t: "Risco Relativo (RR)", q: "Em um estudo de coorte com 4.000 indivíduos, a incidência de IAM para cada 1.000 sedentários foi 20 (30-39 anos) e 120 (50-59 anos). Para ativos, foi 5 e 80, respectivamente. Quais os RRs estratificados por idade?", o: ["RR=0,25 e RR=0,66", "RR=1,50 e RR=1,25", "RR=15,0 e RR=40,0", "RR=4,00 e RR=1,50"], a: 3 },
+            { t: "Morbimortalidade", q: "Região Norte: 12.500 casos e 200 óbitos. Região Sul: 45.000 casos e 450 óbitos. Qual região apresenta maior gravidade da doença e por quê?", o: ["Região Sul, pelo maior número absoluto de óbitos", "Região Norte, pois apresenta maior Letalidade (1,6%)", "Ambas as regiões possuem a mesma gravidade (1%)", "Região Sul, devido à incidência acumulada superior"], a: 1 },
+            { t: "Validação de Teste", q: "Um teste de Dengue aplicado em 500 indivíduos (100 doentes) deu 90 positivos nos doentes e 40 positivos nos saudáveis. Qual o Valor Preditivo Positivo (VPP)?", o: ["90,3%", "30,8%", "69,2%", "18%"], a: 2 },
+            { t: "Odds Ratio e Precisão", q: "Análise de caso-controle revelou um OR de 3,2 com IC 95% entre 2,4 e 4,1 para sedentarismo e IAM. Como interpretar esse dado?", o: ["Estatisticamente significativo e preciso (IC não inclui 1,0 e é estreito)", "Clinicamente irrelevante, pois o limite inferior está próximo de 1,0", "Baixa precisão estatística devido à amplitude superior a 1,0", "O sedentarismo é variável de confusão pois o OR diverge do IC"], a: 0 },
+            { t: "Indicadores de Saúde", q: "Numa cidade de 1,5M de pessoas, houve 493 novos casos em 2023, mas 2.363 pessoas estavam em tratamento ativo no final do ano. O que representa os 2.363?", o: ["Coeficiente de Incidência", "Prevalência Absoluta", "Prevalência por Coeficiente", "Incidência por Densidade"], a: 1 },
+            { t: "Julgamento Clínico", q: "Numa comunidade de baixa prevalência, um teste rápido dá Positivo, mas o VPP é de apenas 10%. Qual a conduta segura?", o: ["Iniciar tratamento padrão imediatamente", "Solicitar teste confirmatório de alta especificidade", "Notificar como confirmado e tranquilizar o paciente", "Descartar o resultado pois o VPP de 10% invalida o teste"], a: 1 },
+            { t: "Critérios de Hill", q: "Segundo o critério de CONSISTÊNCIA de Hill, a causalidade entre um fator e uma neoplasia é fortalecida quando:", o: ["O mecanismo biológico é explicado detalhadamente", "A associação é observada repetidamente por diferentes pesquisadores e populações", "A exposição precede o desfecho obrigatoriamente", "A interrupção do fator reduz a incidência da doença"], a: 1 },
+            { t: "Delineamento", q: "Pesquisador seleciona um grupo de pessoas já doentes (mesotelioma) e um grupo saudável para investigar exposição ao amianto. Qual o estudo?", o: ["Ensaio Clínico Randomizado", "Estudo de Coorte", "Estudo de Caso-Controle", "Estudo Transversal"], a: 2 },
+            { t: "Bioestatística", q: "Ao solicitar que o paciente classifique sua dor em 'Leve', 'Moderada' ou 'Grave', o dado coletado é uma variável:", o: ["Quantitativa Discreta", "Qualitativa Nominal", "Qualitativa Ordinal", "Quantitativa Contínua"], a: 2 },
+            { t: "Causalidade", q: "Associação entre café e câncer sumiu ao ajustar pelo tabagismo. O tabagismo neste cenário é classificado como:", o: ["Fator de Proteção", "Variável de Confusão", "Viés de Memória", "Erro sistemático de seleção"], a: 1 },
+            { t: "Indicadores Gráficos", q: "Analisando um gráfico de acompanhamento de câncer de pulmão em 10 mil pessoas por 3 anos: qual medida expressa a força e persistência da doença?", o: ["Prevalência no início do período", "Incidência acumulada no período", "Letalidade hospitalar", "Taxa de Ataque Secundária"], a: 1 },
+            { t: "Diabetes (DM2)", q: "Novas terapias controlam glicemia e reduzem mortalidade, mas não curam DM2. O que se espera da TAXA DE PREVALÊNCIA?", o: ["Redução da prevalência", "Manutenção da prevalência", "Aumento da prevalência", "Queda drástica da prevalência"], a: 2 },
+            { t: "Acurácia", q: "Em um hemocentro, após triagem inicial 'reagente', qual indicador deve ser PRIORIZADO no teste confirmatório (Western Blot/PCR)?", o: ["Alta Sensibilidade para evitar falsos negativos", "Alta Especificidade para confirmar e evitar diagnóstico falso", "Baixo Valor Preditivo Negativo", "Alta Sensibilidade para triagem secundária"], a: 1 },
+            { t: "Verossimilhança", q: "Teste com Sensibilidade 80% e Especificidade 90%. Qual a Razão de Verossimilhança Positiva (RV+) e seu significado?", o: ["RV+ = 0,8. Indica que o teste é ruim para confirmar", "RV+ = 8,0. Resultado positivo aumenta significativamente a chance de doença", "RV+ = 9,0. Indica alta sensibilidade diagnóstica", "RV+ = 1,1. Indica que o teste não altera a probabilidade pós-teste"], a: 1 },
+            { t: "Cálculo de Erros", q: "Teste para Hepatite C (S=95%, E=90%) em 1000 doadores (100 doentes). Qual o número esperado de FALSOS POSITIVOS?", o: ["5 Falsos Positivos", "10 Falsos Positivos", "90 Falsos Positivos", "50 Falsos Positivos"], a: 2 }
         ];
 
-        let state = { ver: APP_VERSION, name: "", reg: "", level: 0, timeLeft: 1200, score: 1.50, active: false, audio: false, exceeded: false };
+        let state = { ver: APP_VERSION, name: "", reg: "", turma: "", level: 0, timeLeft: 1200, score: 1.50, active: false, audio: false, exceeded: false };
         let timerInt, chart;
 
-        const emergencyReset = () => {
-            localStorage.clear();
-            location.reload();
-        };
-
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.screen-grid').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById(id);
-            if (target.id === 'game-screen') target.classList.add('active');
-            else target.classList.add('active');
-        }
+        const emergencyReset = () => { localStorage.clear(); location.reload(); };
 
         const notify = (msg, type = 'info') => {
             const area = document.getElementById('notification-area');
             const n = document.createElement('div');
             const cl = type === 'error' ? 'border-red-500 text-red-500' : 'border-emerald-500 text-emerald-500';
-            n.className = `p-3 border-l-4 bg-zinc-900 shadow-xl text-[9px] font-black uppercase tracking-widest ${cl} mb-2`;
-            n.innerHTML = `[ALERTA] ${msg}`;
+            n.className = `p-3 border-l-4 bg-zinc-900 shadow-xl text-[9px] font-black uppercase tracking-widest ${cl} mb-2 transition-all`;
+            n.innerHTML = `[SISTEMA] ${msg}`;
             area.appendChild(n);
             setTimeout(() => n.remove(), 4000);
         };
@@ -265,11 +249,7 @@
             if (saved) {
                 try {
                     const loaded = JSON.parse(saved);
-                    // Verifica versão. Se for antiga, reseta tudo para evitar Ctrl+F5
-                    if (loaded.ver !== APP_VERSION) {
-                        emergencyReset();
-                        return;
-                    }
+                    if (loaded.ver !== APP_VERSION) { emergencyReset(); return; }
                     if (loaded.active && loaded.name && loaded.level < questions.length) {
                         state = loaded;
                         resume();
@@ -283,12 +263,10 @@
         const renderLevel = () => {
             const q = questions[state.level];
             if (!q) return finish();
-            
             document.getElementById('level-tag').textContent = `SETOR ${state.level + 1}`;
             document.getElementById('progress-text').textContent = `${(state.level + 1).toString().padStart(2,'0')} / 15`;
             document.getElementById('quest-title').textContent = q.t;
             document.getElementById('quest-body').innerHTML = q.q;
-            
             const box = document.getElementById('options-box');
             box.innerHTML = '';
             q.o.forEach((opt, i) => {
@@ -298,7 +276,6 @@
                 b.onclick = () => checkAnswer(i, b);
                 box.appendChild(b);
             });
-            
             document.getElementById('feedback').classList.add('hidden');
             document.getElementById('next-btn').classList.add('hidden');
         };
@@ -309,8 +286,7 @@
             const btns = document.querySelectorAll('#options-box button');
 
             if (idx === q.a) {
-                // ACERTOU
-                btns.forEach(b => b.onclick = null); // Trava as opções
+                btns.forEach(b => b.onclick = null);
                 btn.classList.add('correct');
                 feedback.innerHTML = "STATUS: Evidência Confirmada. Próximo setor liberado.";
                 feedback.className = "p-4 rounded-sm border-l-4 mb-4 text-[10px] font-black uppercase tracking-wider bg-emerald-900/10 border-emerald-500 text-emerald-500 block";
@@ -318,28 +294,21 @@
                 updateChart(90);
                 notify("SINAL VERDE");
             } else {
-                // ERROU
                 if (state.audio) {
                     const siren = document.getElementById('siren-sound');
                     siren.currentTime = 0;
                     siren.play().catch(()=>{});
                 }
-                
-                state.timeLeft -= 90; // -1:30 min
+                state.timeLeft -= 90; // Penalidade 1:30
                 if (state.timeLeft < 0) state.score -= 0.05;
-                
-                btn.classList.add('wrong'); // Destaca o erro
-                btn.onclick = null; // Desativa apenas a opção errada
-
+                btn.classList.add('wrong');
+                btn.onclick = null;
                 document.getElementById('quest-container').classList.add('penalty-flash');
                 setTimeout(() => document.getElementById('quest-container').classList.remove('penalty-flash'), 500);
-
                 feedback.innerHTML = "ALERTA: Violação técnica (+1m30s). Tente outro dado.";
                 feedback.className = "p-4 rounded-sm border-l-4 mb-4 text-[10px] font-black uppercase tracking-wider bg-red-900/10 border-red-500 text-red-500 block";
-                
-                // O botão "Próximo" permanece oculto até ele acertar
                 updateChart(20);
-                notify("PENALIDADE APLICADA", "error");
+                notify("FALHA DE DADOS", "error");
             }
             updateUI();
             save();
@@ -349,16 +318,79 @@
             const abs = Math.abs(state.timeLeft);
             const m = Math.floor(abs / 60);
             const s = abs % 60;
-            const timerEl = document.getElementById('timer');
-            if (timerEl) {
-                timerEl.textContent = `${state.timeLeft < 0 ? '-' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-                if (state.timeLeft < 0) timerEl.classList.add('text-red-500', 'blink-soft');
-            }
-            const scoreEl = document.getElementById('score');
-            if (scoreEl) scoreEl.textContent = state.score.toFixed(2);
+            document.getElementById('timer').textContent = `${state.timeLeft < 0 ? '-' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+            if (state.timeLeft < 0) document.getElementById('timer').classList.add('text-red-500', 'blink-soft');
+            document.getElementById('score').textContent = state.score.toFixed(2);
         };
 
-        const save = () => localStorage.setItem('sentinela_prof_heriton_v3', JSON.stringify(state));
+        const finish = () => {
+            clearInterval(timerInt);
+            showScreen('result-screen');
+            document.getElementById('app-header').classList.add('hidden');
+            document.getElementById('res-name').textContent = state.name;
+            document.getElementById('res-reg').textContent = state.reg;
+            document.getElementById('res-turma').textContent = state.turma;
+            document.getElementById('res-score').textContent = state.score.toFixed(2);
+            fetch(GOOGLE_SHEET_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({ 
+                    aluno: state.name, 
+                    matricula: state.reg, 
+                    turma: state.turma,
+                    nota: state.score, 
+                    tempo: state.timeLeft,
+                    timestamp: new Date().toISOString()
+                })
+            }).then(() => {
+                document.getElementById('sync-msg').textContent = "SINCRONIZAÇÃO TERMINAL CONCLUÍDA.";
+            });
+        };
+
+        const startGame = () => {
+            const normalized = state.name.toUpperCase().trim();
+            const attempts = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
+            attempts[normalized] = (attempts[normalized] || 0) + 1;
+            localStorage.setItem('sentinela_name_attempts', JSON.stringify(attempts));
+            state.active = true;
+            document.getElementById('app-header').classList.remove('hidden');
+            document.getElementById('dash-name').textContent = state.name;
+            document.getElementById('dash-turma').textContent = state.turma;
+            document.getElementById('dash-attempt').textContent = `${attempts[normalized]} / 5`;
+            showScreen('game-screen');
+            renderLevel();
+            initChart();
+            startTimer();
+            toggleAudio(true);
+        };
+
+        const resume = () => {
+            const normalized = state.name.toUpperCase().trim();
+            const attempts = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
+            document.getElementById('app-header').classList.remove('hidden');
+            document.getElementById('dash-name').textContent = state.name;
+            document.getElementById('dash-turma').textContent = state.turma;
+            document.getElementById('dash-attempt').textContent = `${attempts[normalized] || 1} / 5`;
+            showScreen('game-screen');
+            renderLevel();
+            initChart();
+            startTimer();
+            updateUI();
+        };
+
+        const startTimer = () => {
+            if (timerInt) clearInterval(timerInt);
+            timerInt = setInterval(() => {
+                state.timeLeft--;
+                if (state.timeLeft < 0 && !state.exceeded) {
+                    state.exceeded = true;
+                    state.score -= 0.10;
+                    notify("TEMPO EXCEDIDO", "error");
+                }
+                updateUI();
+                save();
+            }, 1000);
+        };
 
         const toggleAudio = (force) => {
             const music = document.getElementById('bg-music');
@@ -372,67 +404,6 @@
                 icon.textContent = "🔇";
                 state.audio = false;
             }
-        };
-
-        const finish = () => {
-            clearInterval(timerInt);
-            showScreen('result-screen');
-            document.getElementById('app-header').classList.add('hidden');
-            document.getElementById('res-name').textContent = state.name;
-            document.getElementById('res-reg').textContent = state.reg;
-            document.getElementById('res-score').textContent = state.score.toFixed(2);
-            
-            fetch(GOOGLE_SHEET_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({ aluno: state.name, matricula: state.reg, nota: state.score, tempo: state.timeLeft })
-            }).then(() => {
-                document.getElementById('sync-msg').textContent = "SINCRONIZAÇÃO TERMINAL CONCLUÍDA.";
-            });
-        };
-
-        const startTimer = () => {
-            if (timerInt) clearInterval(timerInt);
-            timerInt = setInterval(() => {
-                state.timeLeft--;
-                if (state.timeLeft < 0 && !state.exceeded) {
-                    state.exceeded = true;
-                    state.score -= 0.10;
-                    notify("JANELA EXCEDIDA: -0.10", "error");
-                }
-                updateUI();
-                save();
-            }, 1000);
-        };
-
-        const startGame = () => {
-            const normalized = state.name.toUpperCase().trim();
-            const attempts = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
-            attempts[normalized] = (attempts[normalized] || 0) + 1;
-            localStorage.setItem('sentinela_name_attempts', JSON.stringify(attempts));
-
-            state.active = true;
-            document.getElementById('app-header').classList.remove('hidden');
-            document.getElementById('dash-name').textContent = state.name;
-            document.getElementById('dash-attempt').textContent = `${attempts[normalized]} / 5`;
-            
-            showScreen('game-screen');
-            renderLevel();
-            initChart();
-            startTimer();
-            toggleAudio(true);
-        };
-
-        const resume = () => {
-            const normalized = state.name.toUpperCase().trim();
-            const attempts = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
-            document.getElementById('app-header').classList.remove('hidden');
-            document.getElementById('dash-name').textContent = state.name;
-            document.getElementById('dash-attempt').textContent = `${attempts[normalized] || 1} / 5`;
-            showScreen('game-screen');
-            renderLevel();
-            initChart();
-            startTimer();
         };
 
         const initChart = () => {
@@ -456,24 +427,23 @@
             });
         };
 
-        const updateChart = (val) => {
-            if (chart) {
-                chart.data.datasets[0].data[state.level] = val;
-                chart.update();
-            }
-        };
+        const updateChart = (v) => { if (chart) { chart.data.datasets[0].data[state.level] = v; chart.update(); } };
+        const save = () => localStorage.setItem('sentinela_prof_heriton_v3', JSON.stringify(state));
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.screen-grid').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
 
         document.getElementById('login-btn').onclick = () => {
-            const name = document.getElementById('student-name').value.trim();
-            const reg = document.getElementById('student-reg').value.trim();
-            if (name.length < 3 || reg.length < 2) return alert("Preencha todos os campos.");
-            
-            const normalized = name.toUpperCase().trim();
-            const attempts = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
-            if ((attempts[normalized] || 0) >= 5) return document.getElementById('attempts-warning').classList.remove('hidden');
-
-            state.name = name;
-            state.reg = reg;
+            const n = document.getElementById('student-name').value.trim();
+            const r = document.getElementById('student-reg').value.trim();
+            const t = document.getElementById('student-turma').value.trim();
+            if (n.length < 3 || r.length < 2 || t.length < 1) return alert("Preencha todos os campos corretamente.");
+            const normalized = n.toUpperCase().trim();
+            const att = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
+            if ((att[normalized] || 0) >= 5) return document.getElementById('attempts-warning').classList.remove('hidden');
+            state.name = n; state.reg = r; state.turma = t;
             showScreen('rules-screen');
         };
 
