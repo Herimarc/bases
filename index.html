@@ -52,7 +52,7 @@
         .btn-tactical { transition: all 0.2s ease; }
         .btn-tactical:active { transform: scale(0.98); }
 
-        .option-btn { border: 1px solid #27272a; transition: all 0.2s; }
+        .option-btn { border: 1px solid #27272a; transition: all 0.2s; text-align: left; padding: 1rem; border-radius: 4px; width: 100%; font-size: 0.75rem; background: rgba(0,0,0,0.3); }
         .option-btn.wrong { border-color: #ef4444 !important; background-color: rgba(127, 29, 29, 0.2) !important; color: #f87171 !important; }
         .option-btn.correct { border-color: #10b981 !important; background-color: rgba(6, 78, 59, 0.4) !important; color: #34d399 !important; font-weight: 800; border-width: 2px; }
 
@@ -70,7 +70,9 @@
         .just-wrong { color: #f87171; border-left: 4px solid #ef4444; }
 
         .penalty-flash { animation: flash-red 0.5s; }
-        @keyframes flash-red { 0% { background-color: rgba(239, 68, 68, 0.2); } 100% { background-color: transparent; } }
+        @keyframes flash-red { 0% { background-color: rgba(239, 68, 68, 0.3); } 100% { background-color: transparent; } }
+
+        input::placeholder { color: #3f3f46; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative overflow-x-hidden">
@@ -79,6 +81,7 @@
 
     <div id="notification-area" class="fixed top-4 right-4 z-[100] flex flex-col gap-2 w-72 pointer-events-none"></div>
 
+    <!-- Áudios -->
     <audio id="bg-music" loop preload="auto">
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
@@ -86,18 +89,19 @@
         <source src="https://www.myinstants.com/media/sounds/airhorn.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- Header fixo -->
     <header id="app-header" class="hidden bg-zinc-900 border-b border-zinc-800 p-4 sticky top-0 z-50 shadow-lg">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-emerald-600 text-white flex items-center justify-center font-black rounded shadow-md">HM</div>
                 <div>
                     <h1 class="text-xs font-black text-emerald-500 uppercase tracking-tighter">Operação Sentinela</h1>
-                    <p class="text-[7px] text-zinc-500 font-bold uppercase mt-1">SISTEMA v4.0 | BASES CIENTÍFICAS</p>
+                    <p class="text-[7px] text-zinc-500 font-bold uppercase mt-1">SISTEMA v4.1 | PARÂMETROS FINAIS</p>
                 </div>
             </div>
             <div class="flex items-center gap-6">
                 <div class="text-right">
-                    <p class="text-[8px] uppercase text-zinc-500 font-black">Tempo Restante</p>
+                    <p class="text-[8px] uppercase text-zinc-500 font-black">Tempo de Missão</p>
                     <p id="timer" class="text-lg font-black text-zinc-100 tabular-nums">30:00</p>
                 </div>
                 <div class="text-right border-l border-zinc-800 pl-4 md:pl-8">
@@ -113,6 +117,7 @@
 
     <main class="flex-grow w-full max-w-6xl mx-auto p-4 flex flex-col justify-center">
 
+        <!-- LOGIN -->
         <section id="login-screen" class="screen active terminal-border bg-zinc-900 p-6 md:p-10 rounded shadow-2xl max-w-md mx-auto w-full">
             <div class="mb-8">
                 <h2 class="text-3xl font-black text-emerald-500 mb-1 uppercase italic tracking-tighter">Acesso Agente</h2>
@@ -147,23 +152,25 @@
             </div>
         </section>
 
+        <!-- RULES -->
         <section id="rules-screen" class="screen terminal-border bg-zinc-900 p-6 md:p-10 rounded max-w-2xl mx-auto w-full">
             <h2 class="text-xl font-black text-amber-500 mb-8 uppercase tracking-tighter flex items-center gap-2">
                 <span class="w-2 h-2 bg-amber-500 animate-pulse"></span>
                 Protocolo Operacional
             </h2>
             <div class="space-y-4 text-zinc-400 text-sm border-l-2 border-zinc-800 pl-6">
-                <p>• <span class="text-white font-bold">Duração:</span> Janela de 30:00 minutos de missão.</p>
+                <p>• <span class="text-white font-bold">Janela Operacional:</span> 30:00 minutos de missão.</p>
                 <p>• <span class="text-white font-bold">Progressão:</span> Avance apenas após validar a resposta correta.</p>
                 <p>• <span class="text-red-500 font-bold italic">Penalidade Erro:</span> Cada escolha incorreta adiciona <span class="text-white font-black">+3:00 min</span>.</p>
                 <p>• <span class="text-white font-bold italic">Feedback:</span> Justificativas técnicas aparecem em cada erro ou acerto.</p>
-                <p>• <span class="text-white font-bold">Nota:</span> Score inicial 1.50. Erros após o tempo retiram 0.05 pts.</p>
+                <p>• <span class="text-white font-bold">Punição Nota:</span> Erros em tempo extra retiram 0.05 pts cada.</p>
             </div>
             <button id="start-btn" class="btn-tactical w-full mt-10 bg-amber-600 hover:bg-amber-500 text-white font-black py-5 rounded uppercase text-xs shadow-xl tracking-widest">
                 Iniciar Operação (Ativar Som)
             </button>
         </section>
 
+        <!-- GAME -->
         <section id="game-screen" class="screen-grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             <div class="lg:col-span-8">
                 <div id="quest-container" class="terminal-border bg-zinc-900 p-6 rounded-sm shadow-xl transition-all duration-300">
@@ -187,7 +194,7 @@
             </div>
             <div class="lg:col-span-4 space-y-4">
                 <div class="terminal-border bg-zinc-900 p-4 rounded-sm">
-                    <h4 class="text-[8px] uppercase text-zinc-500 font-black mb-4 tracking-widest">Frequência de Evidência</h4>
+                    <h4 class="text-[8px] uppercase text-zinc-500 font-black mb-4 tracking-widest">Sinal de Evidência</h4>
                     <div class="chart-container"><canvas id="game-chart"></canvas></div>
                 </div>
                 <div class="bg-zinc-900/30 p-4 border border-zinc-800 rounded text-[9px] text-zinc-500 space-y-2">
@@ -198,6 +205,7 @@
             </div>
         </section>
 
+        <!-- RESULTS -->
         <section id="result-screen" class="screen terminal-border bg-zinc-900 p-8 rounded text-center max-w-xl mx-auto shadow-2xl border-emerald-500/50">
             <h2 class="text-4xl font-black text-emerald-500 mb-2 italic uppercase">Missão Concluída</h2>
             <div class="bg-black p-8 rounded border border-zinc-800 text-left space-y-6 mb-6 relative overflow-hidden">
@@ -215,68 +223,68 @@
             <div class="bg-emerald-950/20 border border-emerald-800/40 p-4 rounded mb-8 shadow-inner text-center">
                 <p class="text-emerald-400 font-black text-xs uppercase tracking-[0.1em] blink-soft">📷 TIRE UM PRINT E ANEXE NO TEAMS!</p>
             </div>
-            <p id="sync-msg" class="text-[9px] text-zinc-500 italic uppercase font-bold mb-8 italic">Dados transmitidos com sucesso.</p>
+            <p id="sync-msg" class="text-[9px] text-zinc-500 italic uppercase font-bold mb-8 italic">Sincronizando com o terminal do professor.</p>
             <button onclick="emergencyReset()" class="text-[9px] text-zinc-600 hover:text-emerald-500 uppercase font-black underline transition-colors">[ Reiniciar Sistema ]</button>
         </section>
 
     </main>
 
     <script>
-        const APP_VERSION = "4.0";
+        const APP_VERSION = "4.1";
         const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwahFPVX1FXcJnO8hoB6Cz0CRdzL8B8v3-krnagtJtvlyGVNJrrcyWqAJTqrD03x2t5/exec";
 
         const questions = [
             { 
                 t: "Razão de Verossimilhança (RV-)", 
-                q: "Um estudo avaliou um novo biomarcador para sepse com RV- de 0,1. Qual a interpretação correta deste dado ao ser aplicado em um paciente com suspeita clínica moderada?", 
-                o: ["Resultado positivo confirma o diagnóstico drasticamente.", "Resultado negativo reduz significativamente a probabilidade da doença (útil para exclusão).", "A prevalência da sepse interfere diretamente no valor da RV-.", "O teste possui baixa sensibilidade, justificando o valor."], 
+                q: "Um estudo avaliou um novo biomarcador para sepse com Razão de Verossimilhança Negativa (RV-) de 0,1. Qual a interpretação correta deste dado ao ser aplicado em um paciente com suspeita clínica moderada?", 
+                o: ["Um resultado positivo confirma o diagnóstico drasticamente.", "Um resultado negativo reduz significativamente a probabilidade da doença (útil para exclusão).", "A prevalência da sepse na população estudada irá interferir diretamente no valor da RV-.", "O teste possui baixa sensibilidade, o que justifica o valor baixo da RV-."], 
                 a: 1,
-                j_correct: "CORRETA: Uma RV- de 0,1 é excelente para descartar diagnósticos. Quanto mais próximo de zero, maior a força do teste em reduzir a probabilidade pós-teste diante de um resultado negativo.",
+                j_correct: "CORRETA: Uma RV- de 0,1 é considerada excelente para descartar diagnósticos. Quanto mais próximo de zero, maior a força do teste em reduzir a probabilidade pós-teste diante de um resultado negativo.",
                 j_wrongs: ["INCORRETA: Essa interpretação refere-se à RV+ (Razão de Verossimilhança Positiva).", "INCORRETA: Diferente dos valores preditivos, as Razões de Verossimilhança NÃO dependem da prevalência.", "INCORRETA: Pelo contrário, uma RV- baixa indica que o teste possui ALTA sensibilidade."]
             },
             { 
                 t: "Número Necessário para Tratar (NNT)", 
-                q: "Em estudo sobre estatinas e prevenção de IAM, a incidência no grupo intervenção foi 2% e no grupo controle 5%. Qual o NNT para prevenir um evento?", 
+                q: "Durante um estudo clínico sobre estatinas e prevenção de IAM, o grupo intervenção apresentou uma incidência de 2%, enquanto o grupo controle apresentou 5%. Qual o NNT para prevenir um evento?", 
                 o: ["20 pacientes", "33 pacientes", "50 pacientes", "100 pacientes"], 
                 a: 1,
-                j_correct: "CORRETA: RAR = Incidência Controle (5%) - Incidência Intervenção (2%) = 3% (0,03). NNT = 1 / RAR = 1 / 0,03 ≈ 33,3.",
+                j_correct: "CORRETA: RAR (Redução do Risco Absoluto) = 5% - 2% = 3% (0,03). NNT = 1 / RAR = 1 / 0,03 ≈ 33,3.",
                 j_wrongs: ["INCORRETA: Valor obtido por erro comum de cálculo baseado em Risco Relativo.", "INCORRETA: Este valor não corresponde à redução absoluta observada no estudo.", "INCORRETA: Cálculo incorreto da taxa de prevenção."]
             },
             { 
-                t: "Delineamento de Estudo", 
-                q: "Investigação sobre amianto e mesotelioma (raro e longa latência). Qual o desenho mais eficiente e medida de associação típica?", 
-                o: ["Coorte e Risco Relativo.", "Caso-controle e Odds Ratio (Razão de Chances).", "Ensaio Clínico e Redução do Risco.", "Transversal e Razão de Prevalência."], 
+                t: "Delineamento Amianto", 
+                q: "Um pesquisador deseja investigar se a exposição ao amianto causa mesotelioma (raro e longa latência). Qual o desenho de estudo mais eficiente e medida de associação?", 
+                o: ["Coorte e Risco Relativo.", "Caso-controle e Odds Ratio (Razão de Chances).", "Ensaio Clínico Randomizado e Redução do Risco.", "Transversal e Razão de Prevalência."], 
                 a: 1,
-                j_correct: "CORRETA: Para doenças raras ou com longo período de latência, o Caso-controle é o padrão-ouro por partir do desfecho para a exposição. A medida típica é a Odds Ratio.",
-                j_wrongs: ["INCORRETA: Estudos de coorte são ineficientes e caros para doenças raras.", "INCORRETA: Ensaios clínicos são inadequados/antiéticos para exposições nocivas.", "INCORRETA: Estudos transversais não estabelecem causalidade nem temporalidade."]
+                j_correct: "CORRETA: Para doenças raras ou com longo período de latência, o estudo de Caso-controle é o padrão-ouro por partir do desfecho para a exposição. A medida típica é a Odds Ratio.",
+                j_wrongs: ["INCORRETA: Estudos de coorte são ineficientes e muito caros para doenças raras.", "INCORRETA: Ensaios clínicos são inadequados/antiéticos para exposições nocivas.", "INCORRETA: Estudos transversais não estabelecem causalidade nem temporalidade."]
             },
             { 
                 t: "Curva ROC e AUC", 
-                q: "Exame para esteatose hepática apresenta Área sob a Curva (AUC) de 0,85. Como interpretar em termos de acurácia?", 
-                o: ["Teste pobre, AUC devia ser próxima de 1,0.", "Teste tem boa capacidade discriminatória entre doentes e saudáveis.", "Alta taxa de falso-positivos independentemente do corte.", "Precisão de 85% fixa."], 
+                q: "Ao analisar a curva ROC de um novo exame para detecção de esteatose hepática, um acadêmico nota que a Área sob a Curva (AUC) é de 0,85. Como interpretar esse dado?", 
+                o: ["O teste é considerado pobre, pois a AUC deveria ser próxima de 1,0.", "O teste tem boa capacidade discriminatória entre indivíduos doentes e saudáveis.", "O teste apresenta alta taxa de falso-positivos, independentemente do corte.", "A precisão do teste é de 85%, significando 85 acertos em 100."], 
                 a: 1,
                 j_correct: "CORRETA: Uma AUC entre 0,8 e 0,9 é considerada indicativa de um teste com boa acurácia discriminatória.",
-                j_wrongs: ["INCORRETA: Embora 1,0 seja o ideal, 0,85 é clinicamente muito robusto.", "INCORRETA: A AUC avalia o equilíbrio entre sensibilidade e especificidade, não fixa erros.", "INCORRETA: AUC mede probabilidade discriminatória, não é precisão simples."]
+                j_wrongs: ["INCORRETA: Embora 1,0 seja o ideal, 0,85 é clinicamente muito robusto.", "INCORRETA: A AUC avalia o equilíbrio entre sensibilidade e especificidade, não fixa erros.", "INCORRETA: AUC mede probabilidade de classificação correta de pares, não é precisão simples."]
             },
             { 
-                t: "Teste de Hipótese (P-valor)", 
-                q: "Avaliação de droga anti-hipertensiva com valor-p de 0,03 (nível significância 0,05). Qual a conclusão sobre o erro Tipo I?", 
-                o: ["Aceita-se a hipótese nula.", "Rejeita-se a hipótese nula, com risco de 3% de erro tipo I.", "Estudo inconclusivo pois erro tipo II não foi calculado.", "Existe 97% de chance da droga ser superior."], 
+                t: "Significância Estatística", 
+                q: "Em um teste de hipótese para avaliar uma nova droga anti-hipertensiva, o valor-p encontrado foi de 0,03 (nível padrão de 0,05). Qual a conclusão?", 
+                o: ["Aceita-se a hipótese nula.", "Rejeita-se a hipótese nula, com risco de 3% de estar cometendo um erro tipo I.", "O estudo é inconclusivo, pois o erro tipo II não foi calculado.", "Existe uma probabilidade de 97% de que a droga seja clinicamente superior."], 
                 a: 1,
                 j_correct: "CORRETA: Como p < 0,05, rejeita-se H0. O valor-p representa a probabilidade de observar o resultado se H0 fosse verdadeira; logo, é o risco de erro tipo I.",
-                j_wrongs: ["INCORRETA: P-valor baixo é evidência para REJEITAR a hipótese nula.", "INCORRETA: O estudo permite uma conclusão estatística sobre a associação.", "INCORRETA: P-valor mede erro estatístico, não magnitude de benefício clínico."]
+                j_wrongs: ["INCORRETA: P-valor baixo é evidência para REJEITAR a hipótese nula.", "INCORRETA: O estudo permite uma conclusão estatística sobre a associação.", "INCORRETA: P-valor mede erro estatístico, não magnitude de benefício clínico direto."]
             },
             { 
-                t: "Estratégia de VPP", 
-                q: "Como aumentar o Valor Preditivo Positivo (VPP) de um teste de câncer de próstata sem alterar o teste em si?", 
-                o: ["Aplicar em população de idosos com sintomas (alta prevalência).", "Aplicar em jovens assintomáticos.", "Aumentar o tamanho da amostra.", "Diminuir o ponto de corte da sensibilidade."], 
+                t: "Prevalência e VPP", 
+                q: "Um clínico deseja aumentar o VPP de um teste de triagem para câncer de próstata sem alterar o teste em si. Qual estratégia é eficaz?", 
+                o: ["Aplicar o teste em população de idosos com sintomas (alta prevalência).", "Aplicar o teste em jovens assintomáticos.", "Aumentar o tamanho da amostra para reduzir o IC.", "Diminuir o ponto de corte da sensibilidade."], 
                 a: 0,
                 j_correct: "CORRETA: O VPP é diretamente proporcional à prevalência. Aplicar o teste em situações de alto risco aumenta a probabilidade pós-teste positiva.",
-                j_wrongs: ["INCORRETA: Aplicar em baixa prevalência aumenta falsos-positivos, derrubando o VPP.", "INCORRETA: Amostra reduz o intervalo de confiança, mas não altera o valor do VPP.", "INCORRETA: Alterar o ponto de corte muda a propriedade do teste, violando o enunciado."]
+                j_wrongs: ["INCORRETA: Aplicar em baixa prevalência aumenta os falsos-positivos, derrubando o VPP.", "INCORRETA: Aumentar a amostra reduz o intervalo de confiança, mas não altera o VPP.", "INCORRETA: Alterar o ponto de corte muda a propriedade do teste."]
             },
             { 
                 t: "Critérios de Hill", 
-                q: "Um estudo demonstra que quanto maior o número de cigarros fumados, maior o risco de câncer de pulmão. Qual critério está descrito?", 
+                q: "Um estudo demonstra que quanto maior o número de cigarros fumados por dia, maior o risco de carcinoma de pulmão. Qual critério de Hill está descrito?", 
                 o: ["Plausibilidade Biológica.", "Gradiente Biológico (Dose-Resposta).", "Consistência.", "Analogia."], 
                 a: 1,
                 j_correct: "CORRETA: O gradiente biológico refere-se à relação onde o aumento da intensidade da exposição intensifica o risco do desenvolvimento.",
@@ -284,24 +292,24 @@
             },
             { 
                 t: "Teorema de Bayes", 
-                q: "Dengue: S=90%, E=90%, Prevalência 1%. Qual a probabilidade de um teste positivo ser um verdadeiro doente?", 
+                q: "Dengue: S=90%, E=90%, Prevalência 1%. Qual a probabilidade de um paciente com teste positivo realmente estar doente?", 
                 o: ["1%", "~8,3%", "90%", "99%"], 
                 a: 1,
-                j_correct: "CORRETA: Em baixas prevalências, mesmo testes bons geram muitos falsos-positivos em relação aos verdadeiros. Cálculo via Bayes: aprox 8,3%.",
+                j_correct: "CORRETA: Em baixas prevalências, mesmo testes bons geram muitos falso-positivos em relação aos verdadeiros. Cálculo via Bayes: aprox 8,3%.",
                 j_wrongs: ["INCORRETA: Esta é apenas a probabilidade pré-teste.", "INCORRETA: Você confundiu VPP com a sensibilidade intrínseca.", "INCORRETA: Valor impossível dada a alta taxa de saudáveis (99%) na população."]
             },
             { 
                 t: "Teste Estatístico", 
-                q: "Gráfico de Kaplan-Meier mostra curvas de sobrevida de dois tratamentos se cruzando. Qual teste é o mais adequado para comparar?", 
+                q: "O gráfico de Kaplan-Meier mostra que as curvas de dois tratamentos se cruzam no meio do acompanhamento. Qual teste é mais adequado para comparar?", 
                 o: ["Teste t de Student.", "Teste de Qui-quadrado.", "Teste de Log-rank.", "Correlação de Pearson."], 
                 a: 2,
                 j_correct: "CORRETA: O teste de Log-rank é o padrão-ouro estatístico para comparar curvas de sobrevida (tempo até o evento).",
-                j_wrongs: ["INCORRETA: Teste t compara médias de números contínuos, não tempo de evento.", "INCORRETA: Qui-quadrado compara proporções em tabelas simples.", "INCORRETA: Pearson mede associação linear entre variáveis."]
+                j_wrongs: ["INCORRETA: Teste t compara médias de números contínuos.", "INCORRETA: Qui-quadrado compara proporções em tabelas simples.", "INCORRETA: Pearson mede associação linear entre variáveis."]
             },
             { 
                 t: "Intervalo de Confiança", 
-                q: "Um estudo apresenta Odds Ratio de 1,1 com IC 95% de 0,7 a 1,5. Como interpretar a associação?", 
-                o: ["Exposição é fator de risco claro.", "Exposição é fator de proteção significativo.", "Sem associação estatística, pois o intervalo inclui o valor 1.", "Estudo possui alto poder estatístico."], 
+                q: "Intervalo de Confiança de 95% para uma Odds Ratio variando de 0,7 a 1,5. Como você interpreta a associação?", 
+                o: ["Exposição é fator de risco claro.", "Exposição é fator de proteção significativo.", "Não há associação estatística, pois o intervalo inclui o valor 1.", "O estudo possui alto poder estatístico."], 
                 a: 2,
                 j_correct: "CORRETA: Em medidas de razão (RR/OR), se o IC95% incluir o 1,0, não há significância estatística (p > 0,05).",
                 j_wrongs: ["INCORRETA: Para risco, o limite inferior deve ser maior que 1,0.", "INCORRETA: Para proteção, o limite superior deve ser menor que 1,0.", "INCORRETA: Intervalo largo sugere imprecisão amostral."]
@@ -309,42 +317,42 @@
             { 
                 t: "Temporalidade", 
                 q: "Estudo transversal analisou sedentarismo e obesidade em jovens (RP 1.8). Qual a principal limitação para causalidade?", 
-                o: ["Viés de memória.", "Impossibilidade de determinar a temporalidade.", "Custo elevado.", "Falta de grupo controle."], 
+                o: ["Viés de memória.", "Impossibilidade de determinar a temporalidade.", "Custo elevado e longo tempo.", "Falta de grupo controle."], 
                 a: 1,
                 j_correct: "CORRETA: O estudo transversal é uma 'fotografia'. Não se sabe quem veio primeiro: a exposição ou o desfecho (Causalidade Reversa).",
                 j_wrongs: ["INCORRETA: Viés de memória é típico de casos-controle.", "INCORRETA: Transversais são rápidos e baratos.", "INCORRETA: Controle medicamentoso é exclusivo de Ensaios Clínicos."]
             },
             { 
-                t: "Ponto de Corte (Cut-off)", 
-                q: "Mover o ponto de corte de um teste de triagem para valores mais baixos (mais exigente para negativos) causa:", 
-                o: ["Sobe Sensibilidade e cai Especificidade.", "Cai Sensibilidade e sobe Especificidade.", "VPP sobe obrigatoriamente.", "Acurácia total aumenta."], 
+                t: "Ponto de Corte", 
+                q: "Ao mover o 'ponto de corte' de um teste de triagem para valores mais baixos (tornando o teste mais 'exigente' para considerar negativo):", 
+                o: ["Sensibilidade aumenta e especificidade diminui.", "Sensibilidade diminui e especificidade aumenta.", "VPP aumenta obrigatoriamente.", "Acurácia total aumenta."], 
                 a: 0,
-                j_correct: "CORRETA: Ao baixar o corte, você captura mais doentes (Sobe S), mas inclui mais saudáveis como erros (Cai E).",
+                j_correct: "CORRETA: Ao baixar o corte, você captura mais doentes (Sobe Sensibilidade), mas inclui mais saudáveis como erros (Cai Especificidade).",
                 j_wrongs: ["INCORRETA: Ocorreria ao subir o ponto de corte.", "INCORRETA: O VPP pode cair pelo aumento de falsos-positivos.", "INCORRETA: Acurácia (AUC) é fixa para o teste."]
             },
             { 
                 t: "Vieses (Cegamento)", 
                 q: "Qual o objetivo primordial da técnica de mascaramento 'duplo-cego' em um ensaio clínico?", 
-                o: ["Garantir representatividade.", "Evitar que expectativas interfiram na aferição (viés de aferição).", "Impedir a perda de pacientes (atrito).", "Equalizar tamanho dos grupos."], 
+                o: ["Garantir representatividade.", "Evitar que expectativas interfiram na aferição (viés de aferição).", "Impedir a perda de pacientes (atrito).", "Assegurar grupos com mesmo número de pessoas."], 
                 a: 1,
                 j_correct: "CORRETA: O duplo-cegamento evita o viés de observação, onde o conhecimento da droga influencia a percepção de melhora.",
-                j_wrongs: ["INCORRETA: Resolvido por amostragem, não cegamento.", "INCORRETA: Perda de pacientes é viés de atrito.", "INCORRETA: Tamanho de grupo é definido pelo desenho amostral."]
+                j_wrongs: ["INCORRETA: Resolvido por amostragem.", "INCORRETA: Perda de pacientes é viés de atrito.", "INCORRETA: Tamanho de grupo é desenho amostral."]
             },
             { 
                 t: "Prevalência vs VPP", 
-                q: "Teste S=80% E=80%. Se a prevalência aumentar de 10% para 30% em uma região, o que ocorre?", 
-                o: ["Sensibilidade e Especificidade aumentam.", "VPP aumenta e VPN diminui.", "VPP diminui e VPN aumenta.", "RV+ sofre redução."], 
+                q: "Teste S=80% E=80%. Se a prevalência aumentar de 10% para 30% em determinada região, o que ocorre?", 
+                o: ["Sensibilidade e Especificidade aumentam.", "VPP aumentará e VPN diminuirá.", "VPP diminuirá e VPN aumentará.", "RV+ sofrerá redução estatística."], 
                 a: 1,
-                j_correct: "CORRETA: Valores Preditivos dependem da prevalência. Com mais doentes, a chance do positivo ser verdadeiro sobe (VPP) e do negativo ser real cai (VPN).",
-                j_wrongs: ["INCORRETA: Propriedades intrínsecas (S e E) não mudam.", "INCORRETA: Inversão matemática da realidade.", "INCORRETA: A RV+ é fixa independente da prevalência."]
+                j_correct: "CORRETA: Valores Preditivos dependem da prevalência. Com mais doentes, a chance do positivo ser real sobe (VPP) e do negativo ser real cai (VPN).",
+                j_wrongs: ["INCORRETA: Propriedades intrínsecas (S e E) não mudam.", "INCORRETA: Inversão matemática da realidade epidemiológica.", "INCORRETA: A RV+ é fixa independente da prevalência."]
             },
             { 
                 t: "Distribuição Normal", 
-                q: "Recém-nascidos: Média 3200g e DP 400g. Qual a % aproximada de bebês que pesam entre 2400g e 4000g?", 
+                q: "Bebês: Média 3200g, DP 400g. Qual a % aproximada de bebês que pesam entre 2400g e 4000g?", 
                 o: ["50%", "68%", "95%", "99%"], 
                 a: 2,
-                j_correct: "CORRETA: O intervalo dado compreende a Média ± 2 Desvios Padrões. Na curva normal, isso abrange exatamente 95% dos dados.",
-                j_wrongs: ["INCORRETA: 50% é apenas um lado da média.", "INCORRETA: 68% corresponde a ± 1 Desvio Padrão.", "INCORRETA: 99% corresponde a ± 3 Desvios Padrões."]
+                j_correct: "CORRETA: O intervalo dado compreende a Média ± 2 Desvios Padrões (3200 ± 800). Na curva normal, isso abrange 95% dos dados.",
+                j_wrongs: ["INCORRETA: 50% é apenas metade.", "INCORRETA: 68% corresponde a ± 1 Desvio Padrão.", "INCORRETA: 99% corresponde a ± 3 Desvios Padrões."]
             }
         ];
 
@@ -407,9 +415,10 @@
             const btns = document.querySelectorAll('#options-box button');
 
             if (idx === q.a) {
+                // ACERTO
                 btns.forEach(b => b.onclick = null);
                 btn.classList.add('correct');
-                fStatus.innerHTML = "STATUS: Evidência Confirmada.";
+                fStatus.innerHTML = "STATUS: Evidência Confirmada. Próximo setor desbloqueado.";
                 fStatus.className = "p-3 rounded-sm border-l-4 mb-2 text-[10px] font-black uppercase tracking-wider bg-emerald-900/10 border-emerald-500 text-emerald-500 block";
                 jBox.innerHTML = q.j_correct;
                 jBox.className = "justification-box just-correct block mb-6";
@@ -418,22 +427,29 @@
                 updateChart(90);
                 notify("DADO VALIDADO");
             } else {
+                // ERRO
                 if (state.audio) {
                     const siren = document.getElementById('siren-sound');
                     siren.currentTime = 0;
                     siren.play().catch(()=>{});
                 }
-                state.timeLeft -= 180; // PENALIDADE 3 MINUTOS
+                // --- PENALIDADE DE 3 MINUTOS (180 SEGUNDOS) ---
+                state.timeLeft -= 180; 
                 if (state.timeLeft < 0) state.score -= 0.05;
+                
                 btn.classList.add('wrong');
                 btn.onclick = null;
                 document.getElementById('quest-container').classList.add('penalty-flash');
                 setTimeout(() => document.getElementById('quest-container').classList.remove('penalty-flash'), 500);
-                fStatus.innerHTML = "ALERTA: Falha Técnica (+3m00s).";
+                
+                fStatus.innerHTML = "ALERTA: Falha Técnica (+3m00s). Analise a justificativa.";
                 fStatus.className = "p-3 rounded-sm border-l-4 mb-2 text-[10px] font-black uppercase tracking-wider bg-red-900/10 border-red-500 text-red-500 block";
-                jBox.innerHTML = q.j_wrongs[idx < q.a ? idx : idx - 1] || "JUSTIFICATIVA: Este dado não valida a hipótese clínica apresentada.";
+                
+                // Pega justificativa de erro específica ou padrão
+                jBox.innerHTML = q.j_wrongs[idx < q.a ? idx : idx - 1] || "JUSTIFICATIVA: Alternativa incorreta. Este dado não valida a hipótese clínica analisada.";
                 jBox.className = "justification-box just-wrong block mb-6";
                 jBox.classList.remove('hidden');
+
                 updateChart(20);
                 notify("PENALIDADE: +3:00", "error");
             }
@@ -458,6 +474,8 @@
             document.getElementById('res-reg').textContent = state.reg;
             document.getElementById('res-turma').textContent = state.turma;
             document.getElementById('res-score').textContent = state.score.toFixed(2);
+            
+            // Ordem: aluno, matricula, turma, nota, tempo, timestamp
             fetch(GOOGLE_SHEET_URL, {
                 method: 'POST',
                 mode: 'no-cors',
@@ -469,7 +487,7 @@
                     tempo: state.timeLeft,
                     timestamp: new Date().toLocaleString('pt-BR')
                 })
-            }).then(() => { document.getElementById('sync-msg').textContent = "Dados Sincronizados."; });
+            }).then(() => { document.getElementById('sync-msg').textContent = "Sincronização Concluída."; });
         };
 
         const startGame = () => {
@@ -510,7 +528,7 @@
                 if (state.timeLeft < 0 && !state.exceeded) {
                     state.exceeded = true;
                     state.score -= 0.10;
-                    notify("TEMPO EXCEDIDO", "error");
+                    notify("JANELA EXCEDIDA", "error");
                 }
                 updateUI();
                 save();
@@ -564,7 +582,7 @@
             const n = document.getElementById('student-name').value.trim();
             const r = document.getElementById('student-reg').value.trim();
             const t = document.getElementById('student-turma').value.trim();
-            if (n.length < 3 || r.length < 2 || t.length < 1) return alert("Preencha todos os campos.");
+            if (n.length < 3 || r.length < 2 || t.length < 1) return alert("Preencha todos os campos corretamente.");
             const normalized = n.toUpperCase().trim();
             const att = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
             if ((att[normalized] || 0) >= 5) return document.getElementById('attempts-warning').classList.remove('hidden');
