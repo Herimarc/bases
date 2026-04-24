@@ -10,15 +10,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap');
         
-        :root {
-            --emerald-glow: 0 0 15px rgba(16, 185, 129, 0.3);
-            --red-glow: 0 0 15px rgba(239, 68, 68, 0.4);
-        }
-
         body {
             font-family: 'JetBrains Mono', monospace;
             background-color: #09090b;
             color: #d4d4d8;
+            margin: 0;
+            padding: 0;
         }
 
         .terminal-border {
@@ -41,25 +38,22 @@
         
         @keyframes scan { from { top: -100px; } to { top: 100%; } }
 
-        .btn-tactical {
-            transition: all 0.2s ease;
-        }
-
-        .btn-tactical:active { transform: scale(0.98); }
-
+        .chart-container { height: 180px; width: 100%; }
+        
         .blink-soft { animation: blink 2s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        .chart-container { height: 180px; width: 100%; }
-        
-        .hidden-section { display: none !important; }
+        /* Classes de visibilidade simplificadas */
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .screen-grid { display: none; }
+        .screen-grid.active { display: grid; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative overflow-x-hidden">
 
     <div class="scanline"></div>
 
-    <!-- Área de Notificações -->
     <div id="notification-area" class="fixed top-4 right-4 z-[100] flex flex-col gap-2 w-72 pointer-events-none"></div>
 
     <audio id="bg-music" loop>
@@ -69,23 +63,23 @@
         <source src="https://www.myinstants.com/media/sounds/airhorn.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Header (Oculto no início) -->
-    <header id="app-header" class="hidden-section bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800 p-4 sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-emerald-600 text-white flex items-center justify-center font-black rounded shadow-[0_0_15px_rgba(16,185,129,0.4)]">HM</div>
+    <!-- Header fixo -->
+    <header id="app-header" class="hidden bg-zinc-900 border-b border-zinc-800 p-4 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-emerald-600 text-white flex items-center justify-center font-black rounded shadow-lg">HM</div>
                 <div>
-                    <h1 class="text-xs font-black text-emerald-500 tracking-tighter uppercase leading-none">Operação Sentinela</h1>
-                    <p class="text-[9px] text-zinc-500 font-bold mt-1">SISTEMA v3.1 | PROF. HERITON</p>
+                    <h1 class="text-xs font-black text-emerald-500 uppercase tracking-tighter">Operação Sentinela</h1>
+                    <p class="text-[8px] text-zinc-500 font-bold uppercase">Sistema v3.2 | Estável</p>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right px-4 border-r border-zinc-800">
-                    <p class="text-[8px] uppercase text-zinc-500 font-bold">Tempo</p>
+            <div class="flex items-center gap-6">
+                <div class="text-right">
+                    <p class="text-[8px] uppercase text-zinc-500">Tempo</p>
                     <p id="timer" class="text-lg font-black text-zinc-100 tabular-nums">20:00</p>
                 </div>
-                <div class="text-right">
-                    <p class="text-[8px] uppercase text-zinc-500 font-bold">Nota</p>
+                <div class="text-right border-l border-zinc-800 pl-6">
+                    <p class="text-[8px] uppercase text-zinc-500">Nota</p>
                     <p id="score" class="text-lg font-black text-amber-500">1.50</p>
                 </div>
             </div>
@@ -94,66 +88,62 @@
 
     <main class="flex-grow w-full max-w-6xl mx-auto p-4 flex flex-col justify-center">
 
-        <!-- 1. TELA DE LOGIN -->
-        <section id="login-screen" class="terminal-border bg-zinc-900 p-6 md:p-10 rounded shadow-2xl max-w-md mx-auto w-full">
-            <div class="mb-8">
+        <!-- 1. LOGIN -->
+        <section id="login-screen" class="screen active terminal-border bg-zinc-900 p-6 md:p-10 rounded shadow-2xl max-w-md mx-auto w-full">
+            <div class="mb-8 text-center md:text-left">
                 <h2 class="text-3xl font-black text-emerald-500 mb-1 uppercase italic tracking-tighter">Acesso Restrito</h2>
-                <div class="h-1 w-20 bg-emerald-600"></div>
-                <p class="text-zinc-500 text-[10px] mt-4 font-bold tracking-widest uppercase">Bases Científicas da Medicina</p>
+                <p class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Credenciais Obrigatórias</p>
             </div>
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black tracking-widest">Identificador de Agente (Nome)</label>
-                    <input type="text" id="student-name" class="w-full bg-black border border-zinc-800 p-4 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition-all uppercase" placeholder="NOME DO ALUNO...">
+                    <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black">Nome Completo</label>
+                    <input type="text" id="student-name" class="w-full bg-black border border-zinc-800 p-4 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 uppercase" placeholder="INSIRA O NOME...">
                 </div>
                 <div>
-                    <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black tracking-widest">Matrícula</label>
-                    <input type="text" id="student-reg" class="w-full bg-black border border-zinc-800 p-4 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition-all" placeholder="Nº MATRÍCULA...">
+                    <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black">Matrícula</label>
+                    <input type="text" id="student-reg" class="w-full bg-black border border-zinc-800 p-4 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500" placeholder="Nº DA MATRÍCULA...">
                 </div>
-                <button id="login-btn" class="btn-tactical w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded uppercase tracking-widest text-xs mt-4">
-                    Autenticar Credenciais
+                <button id="login-btn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded uppercase tracking-widest text-xs mt-4 transition-all">
+                    Autenticar Agente
                 </button>
-                
-                <div class="pt-4 border-t border-zinc-800 mt-4">
-                    <button onclick="emergencyReset()" class="w-full text-[8px] text-zinc-600 hover:text-red-500 uppercase font-black transition-colors">
-                        ⚠️ Se a página estiver preta, clique aqui para resetar
-                    </button>
-                </div>
+                <button onclick="emergencyReset()" class="w-full text-[9px] text-zinc-600 hover:text-red-500 uppercase font-black py-2">
+                    [ Limpar Memória / Reset de Erro ]
+                </button>
+                <p id="attempts-warning" class="hidden text-[8px] text-red-500 font-black text-center uppercase">Limite de 5 tentativas atingido.</p>
             </div>
         </section>
 
-        <!-- 2. TELA DE REGRAS -->
-        <section id="rules-screen" class="hidden-section terminal-border bg-zinc-900 p-6 md:p-10 rounded max-w-2xl mx-auto w-full">
-            <h2 class="text-xl font-black text-amber-500 mb-8 uppercase tracking-tighter">Protocolo de Missão</h2>
+        <!-- 2. REGRAS -->
+        <section id="rules-screen" class="screen terminal-border bg-zinc-900 p-6 md:p-10 rounded max-w-2xl mx-auto w-full">
+            <h2 class="text-xl font-black text-amber-500 mb-6 uppercase">Protocolo de Campo</h2>
             <div class="space-y-4 text-zinc-400 text-sm border-l-2 border-zinc-800 pl-6">
-                <p>• Máximo de <span class="text-emerald-500 font-bold">5 tentativas</span> por nome.</p>
-                <p>• 15 cenários bioestatísticos e causais.</p>
-                <p>• Janela operacional de <span class="text-white">20 minutos</span>.</p>
-                <p>• Erros durante o tempo: <span class="text-red-500">+1m20s</span>.</p>
-                <p>• Erros após o tempo esgotar: <span class="text-red-400">-0.05 pts</span> por erro.</p>
+                <p>• <span class="text-white font-bold">Tentativas:</span> 5 por nome cadastrado.</p>
+                <p>• <span class="text-white font-bold">Conteúdo:</span> 15 questões bioestatísticas.</p>
+                <p>• <span class="text-white font-bold">Penalidade Tempo:</span> Erro = +1:20 min.</p>
+                <p>• <span class="text-white font-bold">Penalidade Nota:</span> Erro após 20min = -0.05 pts.</p>
             </div>
-            <button id="start-btn" class="btn-tactical w-full mt-10 bg-amber-600 hover:bg-amber-500 text-white font-black py-5 rounded uppercase tracking-widest text-xs shadow-lg">
-                Iniciar Operação
+            <button id="start-btn" class="w-full mt-10 bg-amber-600 hover:bg-amber-500 text-white font-black py-5 rounded uppercase text-xs shadow-lg">
+                Iniciar Operação Agora
             </button>
         </section>
 
-        <!-- 3. TELA DE JOGO -->
-        <section id="game-screen" class="hidden-section grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- 3. JOGO -->
+        <section id="game-screen" class="screen-grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             <div class="lg:col-span-8">
                 <div id="quest-container" class="terminal-border bg-zinc-900 p-6 rounded-sm">
                     <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-4">
                         <div>
-                            <span id="level-tag" class="text-[9px] bg-emerald-900/30 text-emerald-500 px-2 py-1 rounded font-black uppercase"></span>
-                            <h3 id="quest-title" class="text-emerald-400 text-xs font-bold mt-2 uppercase tracking-tighter"></h3>
+                            <span id="level-tag" class="text-[9px] bg-emerald-900/30 text-emerald-500 px-2 py-1 rounded font-black uppercase">SETOR</span>
+                            <h3 id="quest-title" class="text-emerald-400 text-xs font-bold mt-2 uppercase">CARREGANDO...</h3>
                         </div>
-                        <span id="progress-text" class="text-[10px] text-zinc-600 font-bold tabular-nums"></span>
+                        <span id="progress-text" class="text-[10px] text-zinc-600 font-bold">00 / 15</span>
                     </div>
 
-                    <div id="quest-body" class="bg-black/50 p-6 border border-zinc-800/50 rounded mb-8 text-sm leading-relaxed"></div>
+                    <div id="quest-body" class="bg-black/50 p-6 border border-zinc-800/50 rounded mb-8 text-sm leading-relaxed min-h-[100px]"></div>
                     <div id="options-box" class="grid grid-cols-1 gap-3 mb-6"></div>
                     <div id="feedback" class="hidden p-4 rounded-sm border-l-4 mb-4 text-[10px] font-black uppercase tracking-wider"></div>
-                    <button id="next-btn" class="hidden-section w-full bg-emerald-600 hover:bg-emerald-500 py-4 font-black text-white uppercase rounded text-[10px] tracking-widest shadow-lg">Processar Próximo Setor</button>
+                    <button id="next-btn" class="hidden w-full bg-emerald-600 hover:bg-emerald-500 py-4 font-black text-white uppercase rounded text-[10px] tracking-widest shadow-lg transition-all">Processar Próximo Setor</button>
                 </div>
             </div>
 
@@ -169,23 +159,23 @@
             </div>
         </section>
 
-        <!-- 4. RESULTADOS FINAIS -->
-        <section id="result-screen" class="hidden-section terminal-border bg-zinc-900 p-8 rounded text-center max-w-xl mx-auto shadow-2xl">
-            <h2 class="text-4xl font-black text-emerald-500 mb-2 italic tracking-tighter uppercase">Missão Concluída</h2>
+        <!-- 4. RESULTADOS -->
+        <section id="result-screen" class="screen terminal-border bg-zinc-900 p-8 rounded text-center max-w-xl mx-auto shadow-2xl">
+            <h2 class="text-4xl font-black text-emerald-500 mb-2 italic uppercase">Missão Concluída</h2>
             <div class="bg-black p-8 rounded border border-zinc-800 text-left space-y-6 mb-6">
                 <div class="grid grid-cols-2 gap-4">
                     <div><p class="text-[8px] uppercase text-zinc-500">Agente:</p><p id="res-name" class="text-lg font-bold text-white uppercase"></p></div>
                     <div><p class="text-[8px] uppercase text-zinc-500">Matrícula:</p><p id="res-reg" class="text-lg font-bold text-emerald-500"></p></div>
                 </div>
                 <div class="border-t border-zinc-800 pt-6">
-                    <p class="text-[8px] uppercase text-zinc-500">Nota Final:</p>
-                    <p id="res-score" class="text-6xl font-black text-amber-500 italic"></p>
+                    <p class="text-[8px] uppercase text-zinc-500">Nota Final Atribuída:</p>
+                    <p id="res-score" class="text-6xl font-black text-amber-500 italic">0.00</p>
                 </div>
             </div>
             <div class="bg-emerald-950/20 border border-emerald-800/40 p-4 rounded mb-8">
                 <p class="text-emerald-400 font-black text-xs uppercase tracking-widest blink-soft">📷 TIRE UM PRINT E ANEXE NA ATIVIDADE!</p>
             </div>
-            <p id="sync-msg" class="text-[9px] text-zinc-500 uppercase font-bold mb-8">Sincronizando...</p>
+            <p id="sync-msg" class="text-[9px] text-zinc-500 uppercase font-bold mb-8 italic">Transmissão em curso...</p>
             <button onclick="emergencyReset()" class="text-[9px] text-zinc-500 hover:text-emerald-500 uppercase font-black underline">[ Reiniciar Sistema ]</button>
         </section>
 
@@ -216,19 +206,15 @@
         let timerInt, chart;
 
         function showScreen(id) {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden-section'));
-            document.getElementById(id).classList.remove('hidden-section');
+            document.getElementById('login-screen').classList.remove('active');
+            document.getElementById('rules-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.remove('active');
+            
+            const target = document.getElementById(id);
+            if (id === 'game-screen') target.classList.add('active');
+            else target.classList.add('active');
         }
-
-        const notify = (msg, type = 'info') => {
-            const area = document.getElementById('notification-area');
-            const n = document.createElement('div');
-            const cl = type === 'error' ? 'border-red-500 text-red-500' : 'border-emerald-500 text-emerald-500';
-            n.className = `p-3 border-l-4 bg-zinc-900 shadow-xl text-[9px] font-black uppercase tracking-widest ${cl}`;
-            n.innerHTML = `[ALERTA] ${msg}`;
-            area.appendChild(n);
-            setTimeout(() => n.remove(), 4000);
-        };
 
         const emergencyReset = () => {
             localStorage.clear();
@@ -243,11 +229,14 @@
                     if (loaded.active && loaded.name && loaded.level < questions.length) {
                         state = loaded;
                         resume();
-                        return;
-                    }
-                } catch (e) { localStorage.clear(); }
+                    } else { throw new Error('Incomplete'); }
+                } catch (e) { 
+                    localStorage.removeItem('sentinela_prof_heriton_v3');
+                    showScreen('login-screen');
+                }
+            } else {
+                showScreen('login-screen');
             }
-            showScreen('login-screen');
         };
 
         const renderLevel = () => {
@@ -257,7 +246,7 @@
             document.getElementById('level-tag').textContent = `SETOR ${state.level + 1}`;
             document.getElementById('progress-text').textContent = `${(state.level + 1).toString().padStart(2,'0')} / 15`;
             document.getElementById('quest-title').textContent = q.t;
-            document.getElementById('quest-body').textContent = q.q;
+            document.getElementById('quest-body').innerHTML = q.q;
             
             const box = document.getElementById('options-box');
             box.innerHTML = '';
@@ -270,7 +259,7 @@
             });
             
             document.getElementById('feedback').classList.add('hidden');
-            document.getElementById('next-btn').classList.add('hidden-section');
+            document.getElementById('next-btn').classList.add('hidden');
         };
 
         const checkAnswer = (idx, btn) => {
@@ -283,72 +272,19 @@
                 btn.classList.add('border-emerald-500', 'bg-emerald-900/30');
                 feedback.innerHTML = "STATUS: Evidência Confirmada.";
                 feedback.className = "p-4 rounded-sm border-l-4 mb-4 text-[10px] font-black uppercase tracking-wider bg-emerald-900/10 border-emerald-500 text-emerald-500 block";
-                document.getElementById('next-btn').classList.remove('hidden-section');
+                document.getElementById('next-btn').classList.remove('hidden');
                 updateChart(90);
-                notify("CONEXÃO ESTÁVEL");
             } else {
                 if (state.audio) document.getElementById('siren-sound').play().catch(()=>{});
                 state.timeLeft -= 80;
                 btn.classList.add('border-red-500', 'bg-red-900/30');
                 if (state.timeLeft < 0) state.score -= 0.05;
-                feedback.innerHTML = "ALERTA: Violação técnica detecteda.";
+                feedback.innerHTML = "ALERTA: Violação técnica detectada.";
                 feedback.className = "p-4 rounded-sm border-l-4 mb-4 text-[10px] font-black uppercase tracking-wider bg-red-900/10 border-red-500 text-red-500 block";
-                document.getElementById('next-btn').classList.remove('hidden-section');
+                document.getElementById('next-btn').classList.remove('hidden');
                 updateChart(20);
-                notify("FALHA DE DADOS", "error");
             }
             localStorage.setItem('sentinela_prof_heriton_v3', JSON.stringify(state));
-        };
-
-        const updateChart = (val) => {
-            if (!chart) return;
-            chart.data.datasets[0].data[state.level] = val;
-            chart.update();
-        };
-
-        const finish = () => {
-            clearInterval(timerInt);
-            showScreen('result-screen');
-            document.getElementById('res-name').textContent = state.name;
-            document.getElementById('res-reg').textContent = state.reg;
-            document.getElementById('res-score').textContent = state.score.toFixed(2);
-            document.getElementById('app-header').classList.add('hidden-section');
-            
-            fetch(GOOGLE_SHEET_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({ aluno: state.name, matricula: state.reg, nota: state.score })
-            }).then(() => document.getElementById('sync-msg').textContent = "SINCRONIZAÇÃO TERMINAL CONCLUÍDA.");
-        };
-
-        const startGame = () => {
-            const normalized = state.name.toUpperCase().trim();
-            const attempts = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
-            attempts[normalized] = (attempts[normalized] || 0) + 1;
-            localStorage.setItem('sentinela_name_attempts', JSON.stringify(attempts));
-
-            state.active = true;
-            document.getElementById('dash-name').textContent = state.name;
-            document.getElementById('dash-attempt').textContent = `${attempts[normalized]} / 5`;
-            document.getElementById('app-header').classList.remove('hidden-section');
-            
-            showScreen('game-screen');
-            startTimer();
-            renderLevel();
-            initChart();
-            if (state.audio) document.getElementById('bg-music').play().catch(()=>{});
-        };
-
-        const resume = () => {
-            const normalized = state.name.toUpperCase().trim();
-            const attempts = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
-            document.getElementById('dash-name').textContent = state.name;
-            document.getElementById('dash-attempt').textContent = `${attempts[normalized] || 1} / 5`;
-            document.getElementById('app-header').classList.remove('hidden-section');
-            showScreen('game-screen');
-            startTimer();
-            renderLevel();
-            initChart();
         };
 
         const startTimer = () => {
@@ -368,38 +304,89 @@
             }, 1000);
         };
 
+        const finish = () => {
+            clearInterval(timerInt);
+            showScreen('result-screen');
+            document.getElementById('app-header').style.display = 'none';
+            document.getElementById('res-name').textContent = state.name;
+            document.getElementById('res-reg').textContent = state.reg;
+            document.getElementById('res-score').textContent = state.score.toFixed(2);
+            
+            fetch(GOOGLE_SHEET_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({ aluno: state.name, matricula: state.reg, nota: state.score })
+            }).then(() => document.getElementById('sync-msg').textContent = "SINCRONIZAÇÃO TERMINAL CONCLUÍDA.");
+        };
+
+        const startGame = () => {
+            const normalized = state.name.toUpperCase().trim();
+            const attempts = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
+            attempts[normalized] = (attempts[normalized] || 0) + 1;
+            localStorage.setItem('sentinela_name_attempts', JSON.stringify(attempts));
+
+            state.active = true;
+            document.getElementById('app-header').classList.remove('hidden');
+            document.getElementById('dash-name').textContent = state.name;
+            document.getElementById('dash-attempt').textContent = `${attempts[normalized]} / 5`;
+            
+            showScreen('game-screen');
+            renderLevel();
+            initChart();
+            startTimer();
+            if (state.audio) document.getElementById('bg-music').play().catch(()=>{});
+        };
+
+        const resume = () => {
+            const normalized = state.name.toUpperCase().trim();
+            const attempts = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
+            document.getElementById('app-header').classList.remove('hidden');
+            document.getElementById('dash-name').textContent = state.name;
+            document.getElementById('dash-attempt').textContent = `${attempts[normalized] || 1} / 5`;
+            showScreen('game-screen');
+            renderLevel();
+            initChart();
+            startTimer();
+        };
+
         const initChart = () => {
-            const ctx = document.getElementById('game-chart').getContext('2d');
-            if (chart) chart.destroy();
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Array(15).fill(''),
-                    datasets: [{
-                        data: Array(15).fill(null),
-                        borderColor: '#10b981',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        pointRadius: 0,
-                        fill: true,
-                        backgroundColor: 'rgba(16,185,129,0.1)'
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false, min: 0, max: 100 } } }
-            });
+            try {
+                const ctx = document.getElementById('game-chart').getContext('2d');
+                if (chart) chart.destroy();
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Array(15).fill(''),
+                        datasets: [{
+                            data: Array(15).fill(null),
+                            borderColor: '#10b981',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            fill: true,
+                            backgroundColor: 'rgba(16,185,129,0.1)'
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false, min: 0, max: 100 } } }
+                });
+            } catch(e) { console.error("Chart Fail", e); }
+        };
+
+        const updateChart = (val) => {
+            if (chart) {
+                chart.data.datasets[0].data[state.level] = val;
+                chart.update();
+            }
         };
 
         document.getElementById('login-btn').onclick = () => {
             const name = document.getElementById('student-name').value.trim();
             const reg = document.getElementById('student-reg').value.trim();
-            if (name.length < 3 || reg.length < 2) return notify("Credenciais incompletas", "error");
+            if (name.length < 3 || reg.length < 2) return alert("Credenciais Incompletas");
             
             const normalized = name.toUpperCase().trim();
             const attempts = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
-            if ((attempts[normalized] || 0) >= 5) {
-                document.getElementById('attempts-warning').classList.remove('hidden');
-                return notify("Limite de tentativas atingido", "error");
-            }
+            if ((attempts[normalized] || 0) >= 5) return document.getElementById('attempts-warning').classList.remove('hidden');
 
             state.name = name;
             state.reg = reg;
