@@ -18,22 +18,8 @@
         body {
             font-family: 'JetBrains Mono', monospace;
             background-color: #09090b;
+            color: #d4d4d8;
         }
-
-        @keyframes pulse-red { 
-            0%, 100% { border-color: #ef4444; box-shadow: var(--red-glow); } 
-            50% { border-color: #450a0a; box-shadow: none; } 
-        }
-        
-        .penalty-active { animation: pulse-red 0.5s infinite; }
-        
-        .scanline {
-            width: 100%; height: 100px; z-index: 99; pointer-events: none; position: fixed;
-            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(16,185,129,0.03) 50%, rgba(0,0,0,0) 100%);
-            animation: scan 6s linear infinite;
-        }
-        
-        @keyframes scan { from { top: -100px; } to { top: 100%; } }
 
         .terminal-border {
             border: 1px solid #27272a;
@@ -47,61 +33,61 @@
             background: #10b981;
         }
 
+        .scanline {
+            width: 100%; height: 100px; z-index: 99; pointer-events: none; position: fixed;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(16,185,129,0.03) 50%, rgba(0,0,0,0) 100%);
+            animation: scan 6s linear infinite;
+        }
+        
+        @keyframes scan { from { top: -100px; } to { top: 100%; } }
+
         .btn-tactical {
-            position: relative;
-            overflow: hidden;
             transition: all 0.2s ease;
         }
 
         .btn-tactical:active { transform: scale(0.98); }
 
-        .glitch-text { text-shadow: 2px 0 #ef4444, -2px 0 #3b82f6; }
-
-        .chart-container { height: 180px; width: 100%; }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #09090b; }
-        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
-        
         .blink-soft { animation: blink 2s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        .chart-container { height: 180px; width: 100%; }
+        
+        .hidden-section { display: none !important; }
     </style>
 </head>
-<body class="text-zinc-300 min-h-screen flex flex-col relative overflow-x-hidden">
+<body class="min-h-screen flex flex-col relative overflow-x-hidden">
 
     <div class="scanline"></div>
 
     <!-- Área de Notificações -->
     <div id="notification-area" class="fixed top-4 right-4 z-[100] flex flex-col gap-2 w-72 pointer-events-none"></div>
 
-    <audio id="bg-music" loop preload="auto">
+    <audio id="bg-music" loop>
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
-    <audio id="siren-sound" preload="auto">
+    <audio id="siren-sound">
         <source src="https://www.myinstants.com/media/sounds/airhorn.mp3" type="audio/mpeg">
     </audio>
 
-    <header id="app-header" class="hidden bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800 p-4 sticky top-0 z-50">
+    <!-- Header (Oculto no início) -->
+    <header id="app-header" class="hidden-section bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800 p-4 sticky top-0 z-50">
         <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-4">
                 <div class="w-10 h-10 bg-emerald-600 text-white flex items-center justify-center font-black rounded shadow-[0_0_15px_rgba(16,185,129,0.4)]">HM</div>
                 <div>
                     <h1 class="text-xs font-black text-emerald-500 tracking-tighter uppercase leading-none">Operação Sentinela</h1>
-                    <p class="text-[9px] text-zinc-500 font-bold mt-1">SISTEMA DE AVALIAÇÃO TÁTICA v3.0</p>
+                    <p class="text-[9px] text-zinc-500 font-bold mt-1">SISTEMA v3.1 | PROF. HERITON</p>
                 </div>
             </div>
-            <div class="flex items-center gap-4 md:gap-8">
-                <div class="text-right">
-                    <p class="text-[8px] uppercase text-zinc-500 font-bold">Vínculo Temporal</p>
+            <div class="flex items-center gap-4">
+                <div class="text-right px-4 border-r border-zinc-800">
+                    <p class="text-[8px] uppercase text-zinc-500 font-bold">Tempo</p>
                     <p id="timer" class="text-lg font-black text-zinc-100 tabular-nums">20:00</p>
                 </div>
-                <div class="text-right border-l border-zinc-800 pl-4 md:pl-8">
-                    <p class="text-[8px] uppercase text-zinc-500 font-bold">Patrimônio (Nota)</p>
+                <div class="text-right">
+                    <p class="text-[8px] uppercase text-zinc-500 font-bold">Nota</p>
                     <p id="score" class="text-lg font-black text-amber-500">1.50</p>
                 </div>
-                <button id="toggle-audio" class="bg-zinc-800 p-2 rounded border border-zinc-700 hover:border-emerald-500 transition-colors">
-                    <span id="audio-icon" class="text-sm">🔇</span>
-                </button>
             </div>
         </div>
     </header>
@@ -109,7 +95,7 @@
     <main class="flex-grow w-full max-w-6xl mx-auto p-4 flex flex-col justify-center">
 
         <!-- 1. TELA DE LOGIN -->
-        <section id="login-screen" class="hidden terminal-border bg-zinc-900 p-6 md:p-10 rounded shadow-2xl max-w-md mx-auto w-full">
+        <section id="login-screen" class="terminal-border bg-zinc-900 p-6 md:p-10 rounded shadow-2xl max-w-md mx-auto w-full">
             <div class="mb-8">
                 <h2 class="text-3xl font-black text-emerald-500 mb-1 uppercase italic tracking-tighter">Acesso Restrito</h2>
                 <div class="h-1 w-20 bg-emerald-600"></div>
@@ -118,122 +104,89 @@
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black tracking-widest">Identificador de Agente (Nome Completo)</label>
-                    <input type="text" id="student-name" class="w-full bg-black border border-zinc-800 p-4 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition-all placeholder:text-zinc-700 uppercase" placeholder="NOME DO ALUNO...">
+                    <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black tracking-widest">Identificador de Agente (Nome)</label>
+                    <input type="text" id="student-name" class="w-full bg-black border border-zinc-800 p-4 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition-all uppercase" placeholder="NOME DO ALUNO...">
                 </div>
                 <div>
-                    <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black tracking-widest">Credencial de Matrícula (Número)</label>
-                    <input type="text" id="student-reg" class="w-full bg-black border border-zinc-800 p-4 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition-all placeholder:text-zinc-700" placeholder="DIGITE SUA MATRÍCULA...">
+                    <label class="block text-[9px] uppercase text-zinc-500 mb-2 font-black tracking-widest">Matrícula</label>
+                    <input type="text" id="student-reg" class="w-full bg-black border border-zinc-800 p-4 rounded text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition-all" placeholder="Nº MATRÍCULA...">
                 </div>
                 <button id="login-btn" class="btn-tactical w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded uppercase tracking-widest text-xs mt-4">
                     Autenticar Credenciais
                 </button>
-                <p id="attempts-warning" class="hidden text-[8px] text-red-500 font-bold text-center uppercase mt-2 tracking-tighter">Erro: Limite de 5 tentativas atingido para este nome.</p>
+                
+                <div class="pt-4 border-t border-zinc-800 mt-4">
+                    <button onclick="emergencyReset()" class="w-full text-[8px] text-zinc-600 hover:text-red-500 uppercase font-black transition-colors">
+                        ⚠️ Se a página estiver preta, clique aqui para resetar
+                    </button>
+                </div>
             </div>
         </section>
 
         <!-- 2. TELA DE REGRAS -->
-        <section id="rules-screen" class="hidden terminal-border bg-zinc-900 p-6 md:p-10 rounded max-w-2xl mx-auto w-full">
-            <h2 class="text-xl font-black text-amber-500 mb-8 uppercase tracking-tighter flex items-center gap-2">
-                <span class="w-2 h-2 bg-amber-500 animate-pulse"></span>
-                Protocolo de Missão
-            </h2>
+        <section id="rules-screen" class="hidden-section terminal-border bg-zinc-900 p-6 md:p-10 rounded max-w-2xl mx-auto w-full">
+            <h2 class="text-xl font-black text-amber-500 mb-8 uppercase tracking-tighter">Protocolo de Missão</h2>
             <div class="space-y-4 text-zinc-400 text-sm border-l-2 border-zinc-800 pl-6">
-                <p><span class="text-white font-bold">Tentativas:</span> Máximo de <span class="text-emerald-500 font-bold">5 acessos</span> por nome.</p>
-                <p><span class="text-white font-bold">Cenários:</span> 15 problemas bioestatísticos e causais.</p>
-                <p><span class="text-white font-bold">Janela:</span> 20 minutos nominais.</p>
-                <p><span class="text-red-500 font-bold">Erro:</span> Violação técnica resulta em <span class="text-white bg-red-900/30 px-1 italic">+1:20 min</span>.</p>
-                <p><span class="text-red-400 font-bold italic">REDE DE SEGURANÇA:</span> Após o tempo esgotar, cada erro subtrai <span class="text-white font-bold">0.05 pts</span>.</p>
+                <p>• Máximo de <span class="text-emerald-500 font-bold">5 tentativas</span> por nome.</p>
+                <p>• 15 cenários bioestatísticos e causais.</p>
+                <p>• Janela operacional de <span class="text-white">20 minutos</span>.</p>
+                <p>• Erros durante o tempo: <span class="text-red-500">+1m20s</span>.</p>
+                <p>• Erros após o tempo esgotar: <span class="text-red-400">-0.05 pts</span> por erro.</p>
             </div>
-            <button id="start-btn" class="btn-tactical w-full mt-10 bg-amber-600 hover:bg-amber-500 text-white font-black py-5 rounded uppercase tracking-[0.2em] text-xs shadow-lg">
-                Iniciar Operação de Campo
+            <button id="start-btn" class="btn-tactical w-full mt-10 bg-amber-600 hover:bg-amber-500 text-white font-black py-5 rounded uppercase tracking-widest text-xs shadow-lg">
+                Iniciar Operação
             </button>
         </section>
 
         <!-- 3. TELA DE JOGO -->
-        <section id="game-screen" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            <div class="lg:col-span-8 flex flex-col gap-4">
-                <div id="quest-container" class="terminal-border bg-zinc-900 p-6 rounded-sm transition-all duration-300">
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="flex flex-col">
-                            <span id="level-tag" class="text-[9px] bg-emerald-900/30 text-emerald-500 px-2 py-1 rounded font-black uppercase tracking-widest w-fit"></span>
-                            <span id="quest-title" class="text-emerald-400 text-xs font-bold mt-1 uppercase"></span>
+        <section id="game-screen" class="hidden-section grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-8">
+                <div id="quest-container" class="terminal-border bg-zinc-900 p-6 rounded-sm">
+                    <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-4">
+                        <div>
+                            <span id="level-tag" class="text-[9px] bg-emerald-900/30 text-emerald-500 px-2 py-1 rounded font-black uppercase"></span>
+                            <h3 id="quest-title" class="text-emerald-400 text-xs font-bold mt-2 uppercase tracking-tighter"></h3>
                         </div>
-                        <div class="text-right">
-                            <span id="progress-text" class="text-[10px] text-zinc-600 font-bold tabular-nums"></span>
-                        </div>
+                        <span id="progress-text" class="text-[10px] text-zinc-600 font-bold tabular-nums"></span>
                     </div>
 
-                    <div id="question-content" class="transition-opacity duration-300">
-                        <div class="bg-black/50 p-6 border border-zinc-800/50 rounded mb-8 text-sm text-zinc-300 leading-relaxed font-medium" id="quest-body"></div>
-                        <div id="options-box" class="grid grid-cols-1 gap-3 mb-6"></div>
-                        <div id="feedback" class="hidden p-4 rounded-sm border-l-4 mb-4 text-[10px] font-black uppercase tracking-wider"></div>
-                        <button id="next-btn" class="hidden w-full bg-emerald-600 hover:bg-emerald-500 py-4 font-black text-white uppercase rounded text-[10px] tracking-[0.3em] shadow-[0_10px_20px_-10px_rgba(16,185,129,0.5)] transition-all">Processar Próximo Setor</button>
-                    </div>
+                    <div id="quest-body" class="bg-black/50 p-6 border border-zinc-800/50 rounded mb-8 text-sm leading-relaxed"></div>
+                    <div id="options-box" class="grid grid-cols-1 gap-3 mb-6"></div>
+                    <div id="feedback" class="hidden p-4 rounded-sm border-l-4 mb-4 text-[10px] font-black uppercase tracking-wider"></div>
+                    <button id="next-btn" class="hidden-section w-full bg-emerald-600 hover:bg-emerald-500 py-4 font-black text-white uppercase rounded text-[10px] tracking-widest shadow-lg">Processar Próximo Setor</button>
                 </div>
             </div>
 
-            <div class="lg:col-span-4 flex flex-col gap-4">
+            <div class="lg:col-span-4 space-y-4">
                 <div class="terminal-border bg-zinc-900 p-4 rounded-sm">
                     <h4 class="text-[8px] uppercase text-zinc-500 font-black mb-4 tracking-widest">Estabilidade de Dados</h4>
                     <div class="chart-container"><canvas id="game-chart"></canvas></div>
                 </div>
-                <div id="warning-box" class="hidden bg-red-900/10 border border-red-900/50 p-4 rounded-sm text-center">
-                    <p id="warning-text" class="text-red-500 text-[9px] font-black uppercase animate-pulse tracking-tighter italic">Violação de Protocolo</p>
-                </div>
                 <div class="bg-zinc-900/30 p-4 border border-zinc-800 rounded text-[9px] text-zinc-500 space-y-2">
-                    <div class="flex justify-between"><span>MODO:</span> <span class="text-zinc-400 font-bold uppercase tracking-tighter">Avaliação</span></div>
-                    <div class="flex justify-between"><span>AGENTE:</span> <span id="dash-name" class="text-emerald-500 font-bold uppercase truncate max-w-[150px]">---</span></div>
-                    <div class="flex justify-between"><span>MATRÍCULA:</span> <span id="dash-reg" class="text-zinc-400 font-bold truncate max-w-[120px]">---</span></div>
-                    <div class="flex justify-between"><span>TENTATIVA:</span> <span id="dash-attempt" class="text-zinc-400 font-bold">1 / 5</span></div>
+                    <div class="flex justify-between"><span>AGENTE:</span> <span id="dash-name" class="text-emerald-500 font-bold uppercase truncate max-w-[120px]"></span></div>
+                    <div class="flex justify-between"><span>TENTATIVA:</span> <span id="dash-attempt" class="text-zinc-400 font-bold"></span></div>
                 </div>
             </div>
         </section>
 
         <!-- 4. RESULTADOS FINAIS -->
-        <section id="result-screen" class="hidden terminal-border bg-zinc-900 p-8 rounded text-center max-w-xl mx-auto shadow-2xl border-emerald-500/50">
-            <h2 class="text-4xl font-black text-emerald-500 mb-2 italic tracking-tighter uppercase">Relatório Final</h2>
-            <p class="text-zinc-500 text-[9px] font-bold uppercase tracking-widest mb-8">Arquivamento de Operação Concluído</p>
-            
-            <div class="bg-black p-8 rounded border border-zinc-800 text-left space-y-6 mb-6 relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-2 text-[60px] opacity-[0.03] font-black pointer-events-none uppercase">Top Secret</div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-[8px] uppercase text-zinc-500 font-black">Agente Identificado:</p>
-                        <p id="res-name" class="text-lg font-bold text-white uppercase tracking-tighter"></p>
-                    </div>
-                    <div>
-                        <p class="text-[8px] uppercase text-zinc-500 font-black">Nº de Matrícula:</p>
-                        <p id="res-reg" class="text-lg font-bold text-emerald-500 tracking-tighter"></p>
-                    </div>
+        <section id="result-screen" class="hidden-section terminal-border bg-zinc-900 p-8 rounded text-center max-w-xl mx-auto shadow-2xl">
+            <h2 class="text-4xl font-black text-emerald-500 mb-2 italic tracking-tighter uppercase">Missão Concluída</h2>
+            <div class="bg-black p-8 rounded border border-zinc-800 text-left space-y-6 mb-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><p class="text-[8px] uppercase text-zinc-500">Agente:</p><p id="res-name" class="text-lg font-bold text-white uppercase"></p></div>
+                    <div><p class="text-[8px] uppercase text-zinc-500">Matrícula:</p><p id="res-reg" class="text-lg font-bold text-emerald-500"></p></div>
                 </div>
-                <div class="grid grid-cols-2 gap-8 border-t border-zinc-800 pt-6">
-                    <div>
-                        <p class="text-[8px] uppercase text-zinc-500 font-black">Score Atribuído</p>
-                        <p id="res-score" class="text-5xl font-black text-amber-500 tracking-tighter italic"></p>
-                    </div>
-                    <div class="flex flex-col justify-end">
-                        <p class="text-[8px] uppercase text-zinc-500 font-black">Unidade Curricular</p>
-                        <p class="text-sm font-bold text-emerald-500">Bases Científicas</p>
-                        <p class="text-[9px] text-zinc-500 mt-1 italic uppercase">Faculdade de Medicina</p>
-                    </div>
+                <div class="border-t border-zinc-800 pt-6">
+                    <p class="text-[8px] uppercase text-zinc-500">Nota Final:</p>
+                    <p id="res-score" class="text-6xl font-black text-amber-500 italic"></p>
                 </div>
             </div>
-
             <div class="bg-emerald-950/20 border border-emerald-800/40 p-4 rounded mb-8">
-                <p class="text-emerald-400 font-black text-xs uppercase tracking-[0.15em] blink-soft">
-                    📷 TIRE UM PRINT DESTA TELA E ANEXE NA SUA ATIVIDADE!
-                </p>
+                <p class="text-emerald-400 font-black text-xs uppercase tracking-widest blink-soft">📷 TIRE UM PRINT E ANEXE NA ATIVIDADE!</p>
             </div>
-
-            <div id="sync-status" class="flex items-center justify-center gap-2 mb-8">
-                <div class="w-2 h-2 rounded-full bg-zinc-700" id="sync-dot"></div>
-                <p id="sync-msg" class="text-[9px] text-zinc-500 italic uppercase font-bold tracking-widest">Sincronizando com o Centro de Comando...</p>
-            </div>
-
-            <button onclick="localStorage.removeItem('sentinela_prof_heriton_v3'); location.reload();" class="text-[9px] text-zinc-500 hover:text-emerald-500 uppercase font-black transition-colors hover:underline">
-                [ Reiniciar Sistema ]
-            </button>
+            <p id="sync-msg" class="text-[9px] text-zinc-500 uppercase font-bold mb-8">Sincronizando...</p>
+            <button onclick="emergencyReset()" class="text-[9px] text-zinc-500 hover:text-emerald-500 uppercase font-black underline">[ Reiniciar Sistema ]</button>
         </section>
 
     </main>
@@ -253,190 +206,119 @@
             { t: "Pressuposto SUTVA", q: "A premissa de que o tratamento de uma unidade não interfere no desfecho de outra (SUTVA) é violada principalmente em:", o: ["Cirurgias estéticas", "Doenças contagiosas e campanhas vacinais", "Tratamento de fraturas", "Uso de suplementos vitamínicos"], a: 1 },
             { t: "Ética em Pesquisa (Res 466/12)", q: "Ao detectar um risco inesperado de evento adverso grave em um ensaio clínico, a atitude imediata deve ser:", o: ["Omitir o dado do relatório preliminar", "Notificar o CEP/CONEP e suspender a inclusão de novos sujeitos", "Continuar para não perder poder estatístico", "Alterar o desfecho principal para ocultar a falha"], a: 1 },
             { t: "Critérios de Hill", q: "Qual o único critério de Hill considerado 'essencial' (sine qua non) para a causalidade?", o: ["Força de Associação", "Plausibilidade Biológica", "Temporalidade", "Consistência"], a: 2 },
-            { t: "Sistemas de Informação", q: "O sistema brasileiro responsável pela notificação de agravos compulsórios e vigilância sentinela é o:", o: ["SIM (Sist. de Info. sobre Mortalidade)", "SINASC", "SINAN (Sist. de Info. de Agravos de Notificação)", "SIH/SUS"], a: 2 },
+            { t: "Sistemas de Informação", q: "O sistema brasileiro responsável pela notificação de agravos compulsórios e vigilância sentinela é o:", o: ["SIM", "SINASC", "SINAN", "SIH/SUS"], a: 2 },
             { t: "Hill - Dose-Resposta", q: "A relação onde o aumento da exposição aumenta linearmente o efeito observado é o critério de:", o: ["Coerência", "Gradiente Biológico", "Analogia", "Especificidade"], a: 1 },
             { t: "Medicina Baseada em Evidência", q: "O deslocamento do eixo de decisão da 'eminência' para a 'evidência' significa fundamentalmente que:", o: ["Só a estatística importa no cuidado individual", "A plausibilidade biológica isolada não garante eficácia clínica", "A experiência clínica perdeu seu valor totalmente", "O paciente não deve participar da decisão"], a: 1 },
-            { t: "Razão de Verossimilhança", q: "Uma Razão de Verossimilhança Positiva (LR+) extremamente alta (>10) indica que o teste é:", o: ["Muito sensível para triagem", "Excelente para confirmar (fechar) o diagnóstico", "Muito barato para saúde pública", "Indiferente para a prática clínica"], a: 1 }
+            { t: "Razão de Verossimilhança", q: "Uma Razão de Verossimilhança Positiva (LR+) extremamente alta (>10) indica que o teste é:", o: ["Muito sensível para triagem", "Excelente para confirmar diagnóstico", "Muito barato para saúde pública", "Indiferente para a prática clínica"], a: 1 }
         ];
 
-        let state = {
-            name: "",
-            reg: "",
-            level: 0,
-            timeLeft: 1200, 
-            score: 1.50,
-            active: false,
-            audio: false,
-            exceeded: false
-        };
-
+        let state = { name: "", reg: "", level: 0, timeLeft: 1200, score: 1.50, active: false, audio: false, exceeded: false };
         let timerInt, chart;
 
-        // ─── HELPERS ──────────────────────────────────────────────────────────
-        const $ = id => document.getElementById(id);
-
-        const showOnly = (...ids) => {
-            ['login-screen','rules-screen','game-screen','result-screen'].forEach(id => {
-                $(id).classList.add('hidden');
-            });
-            ids.forEach(id => $(id) && $(id).classList.remove('hidden'));
-        };
+        function showScreen(id) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden-section'));
+            document.getElementById(id).classList.remove('hidden-section');
+        }
 
         const notify = (msg, type = 'info') => {
-            const area = $('notification-area');
+            const area = document.getElementById('notification-area');
             const n = document.createElement('div');
-            const colors = {
-                info: 'border-emerald-500 bg-zinc-900 text-emerald-500',
-                error: 'border-red-500 bg-zinc-950 text-red-500',
-                penalty: 'border-amber-500 bg-zinc-900 text-amber-500'
-            };
-            n.className = `p-3 border-l-4 shadow-xl text-[9px] font-black uppercase tracking-widest translate-x-full transition-transform duration-300 ${colors[type]}`;
-            n.innerHTML = `[SISTEMA] ${msg}`;
+            const cl = type === 'error' ? 'border-red-500 text-red-500' : 'border-emerald-500 text-emerald-500';
+            n.className = `p-3 border-l-4 bg-zinc-900 shadow-xl text-[9px] font-black uppercase tracking-widest ${cl}`;
+            n.innerHTML = `[ALERTA] ${msg}`;
             area.appendChild(n);
-            setTimeout(() => n.classList.remove('translate-x-full'), 10);
-            setTimeout(() => {
-                n.classList.add('translate-x-full');
-                setTimeout(() => n.remove(), 300);
-            }, 4000);
+            setTimeout(() => n.remove(), 4000);
         };
 
-        const syncState = () => localStorage.setItem('sentinela_prof_heriton_v3', JSON.stringify(state));
-
-        const updateUI = () => {
-            const abs = Math.abs(state.timeLeft);
-            const m = Math.floor(abs / 60);
-            const s = abs % 60;
-            const sign = state.timeLeft < 0 ? "-" : "";
-            const timerEl = $('timer');
-            if (timerEl) {
-                timerEl.textContent = `${sign}${m}:${s < 10 ? '0' : ''}${s}`;
-                if (state.timeLeft < 0) timerEl.classList.add('text-red-500', 'glitch-text');
-                else timerEl.classList.remove('text-red-500', 'glitch-text');
-            }
-            const scoreEl = $('score');
-            if (scoreEl) scoreEl.textContent = state.score.toFixed(2);
+        const emergencyReset = () => {
+            localStorage.clear();
+            location.reload();
         };
 
-        // ─── GAME LOGIC ───────────────────────────────────────────────────────
-        const checkAnswer = (idx, btn) => {
-            const q = questions[state.level];
-            const feedback = $('feedback');
-            const btns = document.querySelectorAll('#options-box button');
-
-            if (idx === q.a) {
-                btn.classList.add('border-emerald-500', 'bg-emerald-900/30', 'text-white');
-                feedback.innerHTML = "STATUS: Evidência Confirmada.";
-                feedback.className = "p-4 rounded-sm border-l-4 mb-4 text-[10px] font-black uppercase tracking-wider bg-emerald-900/10 border-emerald-500 text-emerald-500 block";
-                $('next-btn').classList.remove('hidden');
-                btns.forEach(b => b.onclick = null);
-                updateChart(90);
-                notify("CONEXÃO ESTÁVEL");
-            } else {
-                if (state.audio) $('siren-sound').play().catch(()=>{});
-                state.timeLeft -= 80; 
-                btn.classList.add('border-red-500', 'bg-red-900/30', 'text-white');
-                let fbMsg = "ALERTA: Violação técnica (+1m20s).";
-                
-                if (state.timeLeft < 0) {
-                    state.score -= 0.05;
-                    fbMsg += " <br>PENALIDADE ADICIONAL: -0.05 PTS.";
-                    notify("SUBTRAÇÃO DE PONTOS: -0.05", "penalty");
-                } else {
-                    notify("FALHA CRÍTICA", "error");
-                }
-                
-                feedback.innerHTML = fbMsg;
-                feedback.className = "p-4 rounded-sm border-l-4 mb-4 text-[10px] font-black uppercase tracking-wider bg-red-900/10 border-red-500 text-red-500 block";
-                const warning = $('warning-box');
-                const warningText = $('warning-text');
-                warningText.textContent = state.timeLeft < 0 ? "ERRO EM TEMPO EXTRA (-0.05 PTS)" : "Violação: +1m20s";
-                warning.classList.remove('hidden');
-                $('quest-container').classList.add('penalty-active');
-                setTimeout(() => {
-                    warning.classList.add('hidden');
-                    $('quest-container').classList.remove('penalty-active');
-                }, 3000);
-                updateChart(20);
+        const loadState = () => {
+            const saved = localStorage.getItem('sentinela_prof_heriton_v3');
+            if (saved) {
+                try {
+                    const loaded = JSON.parse(saved);
+                    if (loaded.active && loaded.name && loaded.level < questions.length) {
+                        state = loaded;
+                        resume();
+                        return;
+                    }
+                } catch (e) { localStorage.clear(); }
             }
-            syncState();
-            updateUI();
+            showScreen('login-screen');
         };
 
         const renderLevel = () => {
-            if (state.level >= questions.length) { finish(); return; }
             const q = questions[state.level];
-            const content = $('question-content');
-            content.style.opacity = '0';
-            setTimeout(() => {
-                $('level-tag').textContent = `SETOR ${state.level + 1}`;
-                $('progress-text').textContent = `${(state.level + 1).toString().padStart(2,'0')} / ${questions.length}`;
-                $('quest-title').textContent = q.t;
-                $('quest-body').textContent = q.q;
-                const box = $('options-box');
-                box.innerHTML = '';
-                q.o.forEach((opt, i) => {
-                    const b = document.createElement('button');
-                    b.className = "w-full text-left p-4 rounded bg-black/40 border border-zinc-800 hover:border-emerald-500 transition-all text-[11px] group flex items-start gap-4";
-                    b.innerHTML = `<span class="bg-zinc-800 text-zinc-500 group-hover:bg-emerald-600 group-hover:text-white px-2 py-0.5 rounded text-[9px] font-black flex-shrink-0">${String.fromCharCode(65+i)}</span> <span class="flex-grow">${opt}</span>`;
-                    b.onclick = () => checkAnswer(i, b);
-                    box.appendChild(b);
-                });
-                $('feedback').classList.add('hidden');
-                $('next-btn').classList.add('hidden');
-                content.style.opacity = '1';
-            }, 300);
+            if (!q) return finish();
+            
+            document.getElementById('level-tag').textContent = `SETOR ${state.level + 1}`;
+            document.getElementById('progress-text').textContent = `${(state.level + 1).toString().padStart(2,'0')} / 15`;
+            document.getElementById('quest-title').textContent = q.t;
+            document.getElementById('quest-body').textContent = q.q;
+            
+            const box = document.getElementById('options-box');
+            box.innerHTML = '';
+            q.o.forEach((opt, i) => {
+                const b = document.createElement('button');
+                b.className = "w-full text-left p-4 rounded bg-black/40 border border-zinc-800 hover:border-emerald-500 transition-all text-[11px] flex gap-4";
+                b.innerHTML = `<span class="bg-zinc-800 text-zinc-500 px-2 py-0.5 rounded text-[9px] font-black">${String.fromCharCode(65+i)}</span> <span>${opt}</span>`;
+                b.onclick = () => checkAnswer(i, b);
+                box.appendChild(b);
+            });
+            
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden-section');
+        };
+
+        const checkAnswer = (idx, btn) => {
+            const q = questions[state.level];
+            const feedback = document.getElementById('feedback');
+            const btns = document.querySelectorAll('#options-box button');
+            btns.forEach(b => b.onclick = null);
+
+            if (idx === q.a) {
+                btn.classList.add('border-emerald-500', 'bg-emerald-900/30');
+                feedback.innerHTML = "STATUS: Evidência Confirmada.";
+                feedback.className = "p-4 rounded-sm border-l-4 mb-4 text-[10px] font-black uppercase tracking-wider bg-emerald-900/10 border-emerald-500 text-emerald-500 block";
+                document.getElementById('next-btn').classList.remove('hidden-section');
+                updateChart(90);
+                notify("CONEXÃO ESTÁVEL");
+            } else {
+                if (state.audio) document.getElementById('siren-sound').play().catch(()=>{});
+                state.timeLeft -= 80;
+                btn.classList.add('border-red-500', 'bg-red-900/30');
+                if (state.timeLeft < 0) state.score -= 0.05;
+                feedback.innerHTML = "ALERTA: Violação técnica detecteda.";
+                feedback.className = "p-4 rounded-sm border-l-4 mb-4 text-[10px] font-black uppercase tracking-wider bg-red-900/10 border-red-500 text-red-500 block";
+                document.getElementById('next-btn').classList.remove('hidden-section');
+                updateChart(20);
+                notify("FALHA DE DADOS", "error");
+            }
+            localStorage.setItem('sentinela_prof_heriton_v3', JSON.stringify(state));
+        };
+
+        const updateChart = (val) => {
+            if (!chart) return;
+            chart.data.datasets[0].data[state.level] = val;
+            chart.update();
         };
 
         const finish = () => {
             clearInterval(timerInt);
-            state.active = false;
-            syncState();
-            showOnly('result-screen');
-            $('app-header').classList.remove('hidden');
-            $('res-name').textContent = state.name;
-            $('res-reg').textContent = state.reg;
-            $('res-score').textContent = state.score.toFixed(2);
-            if (GOOGLE_SHEET_URL) {
-                const dot = $('sync-dot');
-                dot.classList.add('bg-amber-500', 'animate-pulse');
-                fetch(GOOGLE_SHEET_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({ aluno: state.name, matricula: state.reg, nota: state.score, tempo_restante: state.timeLeft, timestamp: new Date().toISOString() })
-                }).then(() => {
-                    $('sync-msg').textContent = "SINCRONIZAÇÃO TERMINAL CONCLUÍDA.";
-                    dot.classList.remove('bg-amber-500', 'animate-pulse');
-                    dot.classList.add('bg-emerald-500');
-                }).catch(() => {
-                    $('sync-msg').textContent = "ERRO NA TRANSMISSÃO.";
-                    dot.classList.add('bg-red-500');
-                });
-            }
-        };
-
-        const startTimer = () => {
-            if (timerInt) clearInterval(timerInt);
-            timerInt = setInterval(() => {
-                state.timeLeft--;
-                if (state.timeLeft < 0 && !state.exceeded) {
-                    state.exceeded = true;
-                    state.score -= 0.10; 
-                    notify("TEMPO EXCEDIDO: -0.10 PTS", "error");
-                }
-                updateUI();
-                syncState();
-            }, 1000);
-        };
-
-        const setupGameUI = (attemptCount) => {
-            $('app-header').classList.remove('hidden');
-            showOnly('game-screen');
-            $('dash-name').textContent = state.name;
-            // FIX: dash-reg now exists in HTML
-            const dashReg = $('dash-reg');
-            if (dashReg) dashReg.textContent = state.reg;
-            $('dash-attempt').textContent = `${attemptCount} / 5`;
-            updateUI();
+            showScreen('result-screen');
+            document.getElementById('res-name').textContent = state.name;
+            document.getElementById('res-reg').textContent = state.reg;
+            document.getElementById('res-score').textContent = state.score.toFixed(2);
+            document.getElementById('app-header').classList.add('hidden-section');
+            
+            fetch(GOOGLE_SHEET_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({ aluno: state.name, matricula: state.reg, nota: state.score })
+            }).then(() => document.getElementById('sync-msg').textContent = "SINCRONIZAÇÃO TERMINAL CONCLUÍDA.");
         };
 
         const startGame = () => {
@@ -446,44 +328,48 @@
             localStorage.setItem('sentinela_name_attempts', JSON.stringify(attempts));
 
             state.active = true;
-            syncState();
-            setupGameUI(attempts[normalized]);
+            document.getElementById('dash-name').textContent = state.name;
+            document.getElementById('dash-attempt').textContent = `${attempts[normalized]} / 5`;
+            document.getElementById('app-header').classList.remove('hidden-section');
+            
+            showScreen('game-screen');
             startTimer();
             renderLevel();
             initChart();
-            toggleAudio(true);
-            notify("OPERACIONALIZANDO...");
+            if (state.audio) document.getElementById('bg-music').play().catch(()=>{});
         };
 
         const resume = () => {
             const normalized = state.name.toUpperCase().trim();
             const attempts = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
-            setupGameUI(attempts[normalized] || 1);
+            document.getElementById('dash-name').textContent = state.name;
+            document.getElementById('dash-attempt').textContent = `${attempts[normalized] || 1} / 5`;
+            document.getElementById('app-header').classList.remove('hidden-section');
+            showScreen('game-screen');
             startTimer();
-            // FIX: small delay ensures DOM is stable before rendering the question
-            setTimeout(() => renderLevel(), 100);
-            setTimeout(() => initChart(), 100);
-            notify("SESSÃO RETOMADA");
+            renderLevel();
+            initChart();
         };
 
-        const toggleAudio = (force) => {
-            const m = $('bg-music');
-            const icon = $('audio-icon');
-            if (force === true || (!state.audio && force !== false)) {
-                m.play().catch(() => {});
-                icon.innerHTML = '🔊';
-                state.audio = true;
-            } else {
-                m.pause();
-                icon.innerHTML = '🔇';
-                state.audio = false;
-            }
+        const startTimer = () => {
+            if (timerInt) clearInterval(timerInt);
+            timerInt = setInterval(() => {
+                state.timeLeft--;
+                if (state.timeLeft < 0 && !state.exceeded) {
+                    state.exceeded = true;
+                    state.score -= 0.10;
+                }
+                const abs = Math.abs(state.timeLeft);
+                const m = Math.floor(abs / 60);
+                const s = abs % 60;
+                document.getElementById('timer').textContent = `${state.timeLeft < 0 ? '-' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+                document.getElementById('score').textContent = state.score.toFixed(2);
+                localStorage.setItem('sentinela_prof_heriton_v3', JSON.stringify(state));
+            }, 1000);
         };
 
         const initChart = () => {
-            const canvas = $('game-chart');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
+            const ctx = document.getElementById('game-chart').getContext('2d');
             if (chart) chart.destroy();
             chart = new Chart(ctx, {
                 type: 'line',
@@ -503,60 +389,31 @@
             });
         };
 
-        const updateChart = (val) => {
-            if (chart) {
-                chart.data.datasets[0].data[state.level] = val;
-                chart.update();
-            }
-        };
-
-        // ─── EVENT LISTENERS ──────────────────────────────────────────────────
-        $('login-btn').onclick = () => {
-            const name = $('student-name').value.trim();
-            const reg  = $('student-reg').value.trim();
+        document.getElementById('login-btn').onclick = () => {
+            const name = document.getElementById('student-name').value.trim();
+            const reg = document.getElementById('student-reg').value.trim();
+            if (name.length < 3 || reg.length < 2) return notify("Credenciais incompletas", "error");
             
-            if (!name || name.length < 3) return notify("IDENTIFICAÇÃO INVÁLIDA", "error");
-            if (!reg  || reg.length  < 2) return notify("MATRÍCULA NECESSÁRIA", "error");
-
             const normalized = name.toUpperCase().trim();
             const attempts = JSON.parse(localStorage.getItem('sentinela_name_attempts') || '{}');
             if ((attempts[normalized] || 0) >= 5) {
-                $('attempts-warning').classList.remove('hidden');
-                return notify("LIMITE ATINGIDO", "error");
+                document.getElementById('attempts-warning').classList.remove('hidden');
+                return notify("Limite de tentativas atingido", "error");
             }
 
             state.name = name;
-            state.reg  = reg;
-            showOnly('rules-screen');
+            state.reg = reg;
+            showScreen('rules-screen');
         };
 
-        $('start-btn').onclick = startGame;
-        $('toggle-audio').onclick = () => toggleAudio();
-        $('next-btn').onclick = () => {
+        document.getElementById('start-btn').onclick = startGame;
+        document.getElementById('next-btn').onclick = () => {
             state.level++;
-            syncState();
             if (state.level < questions.length) renderLevel();
             else finish();
         };
 
-        // ─── BOOT ─────────────────────────────────────────────────────────────
-        window.onload = () => {
-            const saved = localStorage.getItem('sentinela_prof_heriton_v3');
-            if (saved) {
-                try {
-                    const loaded = JSON.parse(saved);
-                    // Only resume if session was active and still has questions left
-                    if (loaded.active && loaded.name && typeof loaded.level === 'number' && loaded.level < questions.length) {
-                        state = loaded;
-                        resume();
-                        return;
-                    }
-                } catch (e) { /* fall through */ }
-                localStorage.removeItem('sentinela_prof_heriton_v3');
-            }
-            // Default: show login
-            showOnly('login-screen');
-        };
+        window.onload = loadState;
     </script>
 </body>
 </html>
